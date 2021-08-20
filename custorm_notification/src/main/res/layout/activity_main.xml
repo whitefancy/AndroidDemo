@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context="com.whitefancy.customnotification.MainActivity">
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:onClick="showNotification"
+        android:text="立即通知" />
+    <Button
+        android:id="@+id/work1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:onClick="starkWorkLater"
+        android:text="5秒后通知" />
+    <Button
+        android:id="@+id/work"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="starkWorkNow"
+        android:text="立即通知（使用工作管理器）" />
+    <Button
+        android:id="@+id/alarmup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:onClick="up"
+        android:text="（改为）10秒后通知 " />
+    <Button
+        android:id="@+id/alarmdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="500dp"
+        android:onClick="down"
+        android:text="（改为）2秒后通知 " />
+
+</RelativeLayout>

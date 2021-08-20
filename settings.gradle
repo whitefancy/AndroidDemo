@@ -1,0 +1,5 @@
+include ':permission'
+include ':heyer_app'
+include ':custorm_notification'
+include ':app'
+rootProject.name = "AndroidDemo"

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">customNotification</string>
+    <string name="show">show</string>
+    <string name="work">work</string>
+</resources>
