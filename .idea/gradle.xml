@@ -11,10 +11,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/custorm_notification" />
             <option value="$PROJECT_DIR$/heyer_app" />
             <option value="$PROJECT_DIR$/permission" />
+            <option value="$PROJECT_DIR$/update_api_version" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

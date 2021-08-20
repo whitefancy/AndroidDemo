@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="pub.whitefancy.androiddemo">
+    <!--
+    AndroidManifest.xml
+    整个Android项目的配置文件，你在程序中定义的所有四大组件都需要在这个文件里注册，另外还可以在这个文件中给应用程序添加权限声明。
+    <activity android:name=".HelloWorldActivity">
+    <intent-filter>
+    <action android:name="android.intent.action.MAIN" />
+    <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+    </activity>
+    这段代码表示对HelloWorldActivity这个活动进行注册，没有在AndroidManifest.xml里注册的活动是不能使用的。其中intent-filter里的两行代码非常重要，和表示HelloWorldActivity是这个项目的主活动，在手机上点击应用图标，首先启动的就是这个活动。
+    -->
+    <!-- 屏幕适配 -->
+    <!-- 默认参数，不需要修改，直接复制就行，此段代码为可选。作用是适配安卓全面屏手机，比如小米mix系列。如果不加此段代码，会出现SDK的悬浮球在横屏游戏模式下不能贴边的问题。如果加入此段代码，那么你的游戏比例会被强制拉伸到全面屏的比例。比如正常手机都是16:9的屏幕比例，而有的全面屏是18:9，那么加入了此段代码，你的游戏画面就会被拉伸到18:9 。如果不加，则不会被拉伸。所以你需要根据自己的游戏适配画面比例来判断是否需要加。 -->
+    <meta-data
+        android:name="android.max_aspect"
+        android:value="2.1" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AndroidDemo"
+        android:usesCleartextTraffic="true">
+        <!--        Activity的四种android:launchMode
+standard
+standard模式是默认的启动模式，不用为<activity>配置android:launchMode属性即可，当然也可以指定值为standard。
+standard模式的原理如下图所示：
+standard启动模式，不管有没有已存在的实例，都生成新的实例。
+singleTop: 栈顶复用模式
+新启动Activity栈顶已经存在，不会重新创建，同时会调用onNewIntent方法
+Activity如果存在，但是不再栈顶，则会重新创建，并将新的Activity压入栈顶。
+<activity
+android:name=".SingleTopActivity"
+android:launchMode="singleTop"/>
+添加指定属性android:launchMode="singleTop"，系统就会按照singleTop启动模式处理跳转行为。
+singleTop模式的原理如下图所示：
+跳转时系统会先在栈结构中寻找是否有一个FirstActivity实例正位于栈顶，如果有则不再生成新的，而是直接使用。也许朋友们会有疑问，我只看到栈内只有一个Activity，如果是多个Activity怎么办，如果不是在栈顶会得到一个新的Activity实例。
+原理图如下：
+这就是singleTop启动模式，如果发现有对应的Activity实例正位于栈顶，则重复利用，不再生成新的实例
+singleTask: 栈内复用模式
+只要Activity在栈内存在，多次启动此Activity也不会创建新的实例，并且系统会调用onNewIntent方法
+如果Activity在栈内存在，但是没有在栈顶，系统会将该Activity之上的Activity全部挤出栈顶，使该Activity位于栈顶。
+<activity
+android:name=".SingleTaskActivity"
+android:launchMode="singleTask" />
+singleTask模式，如果发现有对应的Activity实例，则使此Activity实例之上的其他Activity实例统统出栈，使此Activity实例成为栈顶对象，显示到幕前。
+生命周期执行：
+singleTask、singleInstance、singleInstance模式下，如果启动该Activity正好在顶部。那么他的生命周期执行为:
+onPause->onNewIntent->onResume
+        singleTask、singleInstance模式下，如果栈内有Activity实例，但不在栈顶。那么生命周期执行如下
+        onNewIntent->onRestart->onStart
+        launchMode在多个Activity跳转的过程中扮演着重要的角色，它可以决定是否生成新的Activity实例，是否重用已存在的Activity实例，是否和其他Activity实例公用一个task里。这里简单介绍一下task的概念，task是一个具有栈结构的对象，一个task可以管理多个Activity，启动一个应用，也就创建一个与之对应的task。
+        singleInstance: 单实例模式
+        这种启动模式比较特殊，因为它会启用一个新的栈结构，将Acitvity放置于这个新的栈结构中，并保证不再有其他Activity实例进入。
+        该Activity只能单独位于一个任务栈中
+        -->
+        <activity
+            android:name=".SingleInstanceActivity"
+            android:launchMode="singleInstance"></activity>
+        <!--        清单声明的接收器
+        如果您在清单中声明广播接收器，系统会在广播发出后启动您的应用（如果应用尚未运行）。
+        注意：如果您的应用以 API 级别 26 或更高级别的平台版本为目标，则不能使用清单为隐式广播（没有明确针对您的应用的广播）声明接收器，但一些不受此限制的隐式广播除外。在大多数情况下，您可以使用调度作业来代替。
+        要在清单中声明广播接收器，请执行以下步骤：
+        在应用清单中指定 <receiver> 元素。
+        -->
+        <receiver
+            android:name=".MyBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+                usesCleartextTraffic 指示应用程序是否打算使用明文网络流量，例如明文HTTP。
+        目标API级别为27或更低的应用程序的默认值为“ true”。面向API级别28或更高级别的应用默认为“ false”。
+        当属性设置为“ false”时，平台组件（例如，HTTP和FTP堆栈，DownloadManager和MediaPlayer）将拒绝应用程序使用明文流量的请求。强烈建议第三方库也采用此设置。避免明文通信的主要原因是缺乏机密性，真实性和防篡改保护；
+        网络攻击者可以窃听所传输的数据，并且还可以对其进行修改而不会被检测到。
+        -->
+        <!--
+        使用平台样式和主题背景
+        Android 提供的用户体验主题背景可为应用赋予底层操作系统的外观和风格。这些主题背景可在清单文件中应用于您的应用。通过利用这些内置样式和主题背景，您的应用可在每个新版 Android 系统发布时自动沿用其最新外观和风格。
+        如需为您的 Activity 赋予类似对话框的外观：
+        <activity android:theme="@android:style/Theme.Dialog">
+        如需为您的 Activity 赋予透明背景：
+        <activity android:theme="@android:style/Theme.Translucent">
+        如需应用您在 /res/values/styles.xml 中定义的自定义主题背景：
+        <activity android:theme="@style/CustomTheme">
+        如需将某个主题背景应用于您的整个应用（所有 Activity），请为 <application> 元素添加 android:theme 属性：
+        <application android:theme="@style/CustomTheme">
+        -->
+        <activity
+            android:name=".DownloadActivity"
+            android:label="@string/title_activity_download"
+            android:theme="@style/Theme.AndroidDemo.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <!--MAIN与LAUNCHER的区别
+                MAIN指定了程序入口地址。
+                LAUNCHER是程序在手机桌面上的图标。
+                如果只设置了MAIN，没有设置LAUNCHER，则程序可以被安装到手机，但是在桌面看不到APP的图标，所以也就无法启动APP。
+                如果只设置了LAUNCHER，没有设置MAIN，则程序不知道从哪个Activity启动，所以也就不会在桌面显示图标。
+                如果给多个Activity设置了MAIN和LAUNCHER，则会在桌面显示多个APP图标，进入分别设置的Activity中。
+                -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+        Android 9.0是默认禁止所有http请求的，需要在代码中设置如以下代码才可以正常进行网络请求
+            解决方案：
+            方案 ① 在项目manifest中application节点中添加 android:usesCleartextTraffic=“true”
+            方案 ② 在项目manifest中application节点中添加
+            android:networkSecurityConfig="@xml/network_security_config"
+            XML 文件中添加新文件 network_security_config.xml
+            <network-security-config>
+            <base-config cleartextTrafficPermitted="true" />
+            </network-security-config>
+        -->
+        <!--
+        Failed resolution of: Lorg/apache/http/ProtocolVersion;
+        问题原因：
+        这是GooglePlay Services方面的一个bug
+        Android 6.0 中，取消了对 Apache HTTP 客户端的支持。 从 Android 9 开始，默认情
+        况下该内容库已从 bootclasspath 中移除且不可用于应用。
+        解决方案：
+        在项目manifest中application节点中添加子节点
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <!--
+        应用间共享文件限制
+        在Android 7.0系统上，Android框架强制执行了StrictMode API政策禁止向应用外公开file://URI，如果一项包含文件file://URI类型的的Intent离开你的应用，即调用Uri.from(file)传递文件路径给第三方应用，会出现FileUriExposedException异常，如调用系统相机拍照、裁切照片、打开APK安装界面等。
+        如果要 在应用间共享文件，可以发送content://URI类型的Uri，并授予URI临时访问权限，进行此授权的最简单方式是使用FileProvider类。
+        步骤如下：
+        在AndroidManiest.xml清单中注册provider
+        exported为false，grantUriPermissions表示授予URI临时访问权限。
+指定共享目录
+上文中的android:resource="@xml/file_provider_paths"指定了共享的目录，其配置如下：
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.demo.lizejun.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+    </application>
+
+</manifest>

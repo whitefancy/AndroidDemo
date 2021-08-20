@@ -37,5 +37,24 @@ dependencies {
     implementation("androidx.work:work-runtime:$work_version") {
         exclude group: 'com.android.support'
     }
-
+//WorkManager 使用入门
+//如需开始使用 WorkManager，请先将库导入您的 Android 项目中。
+//将以下依赖项添加到应用的 build.gradle 文件中：
+//dependencies {
+//  def work_version = "2.5.0"
+//    // (Java only)
+//    implementation "androidx.work:work-runtime:$work_version"
+//    // Kotlin + coroutines
+//    implementation "androidx.work:work-runtime-ktx:$work_version"
+//    // optional - RxJava2 support
+//    implementation "androidx.work:work-rxjava2:$work_version"
+//    // optional - GCMNetworkManager support
+//    implementation "androidx.work:work-gcm:$work_version"
+//    // optional - Test helpers
+//    androidTestImplementation "androidx.work:work-testing:$work_version"
+//    // optional - Multiprocess support
+//    implementation "androidx.work:work-multiprocess:$work_version"
+//  }
+//添加依赖项并同步 Gradle 项目后，下一步便是定义一些要运行的工作。
+//注意：您随时都可以在 WorkManager 版本页面上找到最新版本的 WorkManager，包括 Beta 版、Alpha 版和候选版本。
 }

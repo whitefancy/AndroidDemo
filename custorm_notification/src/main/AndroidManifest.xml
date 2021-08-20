@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CustomNotification">
+        <!--        系统广播删除
+        Android N关闭了三项系统广播：网络状态变更广播、拍照广播及录像广播。
+        只有在通过 动态注册 的方式才能收到网络变化的广播，在AndroidManifest.xml中静态的注册的无法收到。
+        -->
         <receiver
             android:name="com.whitefancy.customnotification.NotificationReceiver"
             android:enabled="true"

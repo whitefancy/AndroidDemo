@@ -1,0 +1,503 @@
+plugins {
+    id 'com.android.application'
+}
+//Gradle 构建配置文件
+//让依赖项配置针对特定构建
+//如果您希望某个依赖项仅用于特定的构建变体源代码集或测试源代码集，
+// 请将依赖项配置名称首字母大写，并在其前面加上构建变体或测试源代码集的名称作为前缀。
+//android {...}
+//// Creates Gradle dependency configurations to use in the dependencies block.
+//configurations {
+//    // For variants that combine a product flavor and build type, you need to
+//    // intitialize a placeholder for its dependency configuration.
+//    freeDebugRuntimeOnly{}
+//    ...
+//}
+//dependencies {
+//    // Adds an implementation dependency only to the "free" product flavor.
+//    freeImplementation 'com.google.firebase:firebase-ads:9.8.0'
+//    // Adds a runtimeOnly dependency only to the "freeDebug" build variant.
+//    freeDebugRuntimeOnly fileTree(dir: 'libs', include: ['*.jar'])
+//    // Adds a remote binary dependency only for local tests.
+//    testImplementation 'junit:junit:4.12'
+//    // Adds a remote binary dependency only for the instrumented test APK.
+//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+//}
+
+android {
+    //compileSDKVersion
+    //compileSDKVersion定义应用程序编译选择哪个Android SDK版本，通常设置为最新的API版本，
+    // 它的属性值不会影响Android系统运行行为，仅仅是Android编译项目时其中的一项配置，不会打包到APK中，
+    // 其目的是为了 在编译的时候检查代码的错误的警告，提示开发者修改和优化。
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "pub.whitefancy.androiddemo"
+
+        //minSdkVersion
+        //minSdkVersion定义应用支持安装的最低Android版本，这个数值有两个作用：
+        //告诉Google Play Store哪些Android版本的手机可以安装该APK。
+        //默认情况下，lint会对代码中的API调用做出提示，假如你调用的API是在minSdkVersion之后才提供的，那么它会告诉你，虽然可以编译通过，但是会在运行的时候抛出异常。
+        //如果调用的API是在minSdkVersion之后才提供的，解决的方案有两种：
+        //运行时判断API Level，仅在足够高，有此方法的API Level系统中调用此方法。
+        //if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        // //处理逻辑。
+        //}
+        //保证功能完整性，通过低版本的API实现功能。
+        minSdkVersion 19
+        //在运行时检查系统版本
+        //Android 会在 Build 常量类中为每个平台版本提供一个唯一的代码。请在您的应用内使用这些代码构建条件，以确保那些依赖更高 API 级别的代码仅在系统上提供这些 API 时才会执行。
+        //注意：解析 XML 资源时，Android 会忽略当前设备不支持的 XML 属性。
+        // 因此您可以放心地使用只有新版系统才支持的 XML 属性，无需担心旧版系统遇到该代码时会中断执行。
+        // 例如，如果您设置了 targetSdkVersion="11"，默认情况下您的应用在 Android 3.0 及更高版本的系统上
+        // 才会包含 ActionBar。之后如需为操作栏添加菜单项，
+        // 则需在您的菜单资源 XML 中设置 android:showAsAction="ifRoom"。
+        // 您可以放心地在跨版本 XML 文件中执行此操作，因为旧版 Android 会直接忽略 showAsAction 属性（
+        // 也就是说，您不需要在 res/menu-v11/ 中单独提供一个版本）。
+        //targetSdkVersion 有什么用
+        //每个Android版本都会对应一个API数字，例如Android 7.0对应的是API 24，当手机的Android系统版本升级的时候，会出现两种情况：
+        //提供了新的接口。如果开发者想要在APP中使用Android 7.0提供的新功能，除了需要使用Android 7.0手机，还需要保证targetSdkVersion升级到至少24，从这个角度来说，升级 targetSdkVersion 的目的是为了使用新版本的功能。
+        //旧接口的行为发生了变化。为了保证旧的APK的行为还是和以前兼容，在源码当中，有许多类似于ctx.getApplicationInfo().targetSdkVersion的判断。因此只要APK的targetSdkVersion不变，即使这个APK安装在新的Android系统上，其行为也不会发生变化，从这个角度来说，targetSdkVersion 保证了系统对旧应用的向前兼容性。
+        //        如何利用最新 API，同时继续为旧版 API 提供支持。
+//平台版本信息中心会定期更新，以根据访问 Google Play 商店的设备数量显示搭载 Android 各版本的活跃设备分布情况。
+// 一般而言，在针对最新版本开发应用的同时，最好使应用能够支持大约 90% 的活跃设备。
+//随着 Android 新版本的发布，某些样式和行为可能会发生变化。
+// 为让您的应用能够充分利用这些变化并确保其适应各类用户设备的样式，
+// 您应将 targetSdkVersion 值设置为与市场上最新的 Android 版本一致。
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+//        添加多密度矢量图形的好处是使用矢量图代替位图可以减小 APK 的尺寸，
+//        因为可以针对不同屏幕密度调整同一文件的大小，而不会降低图像质量。
+//        对于不支持矢量图的较早版本 Android 系统，Vector Asset Studio
+//        可在构建时针对每种屏幕密度将矢量图转换为不同大小的位图。
+        vectorDrawables.useSupportLibrary = true
+    }
+//从Android studio 3.0 之后 lib依赖model build.gradle 里面 buildConfig 节点中的配置项必须和
+//主工程app下build.gradle 中配置的一样 如：
+//buildTypes {
+// debug {
+// ....//我自己项目中的配置
+// }
+// beta {
+// ....//我自己项目中的配置
+// }
+// release {
+// ....//我自己项目中的配置
+// }
+// }
+// 那么引用的model中的配置也必须保持一致
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui:2.3.5'
+}
+//多环境打包的时候
+//我们之前是这么写的
+//android.applicationVariants.all { variant ->
+// variant.outputs.each { output ->
+// def outputFile = output.outputFile
+// if (outputFile != null && outputFile.name.endsWith('.apk')) {
+// //这里修改apk文件名
+// def fileName = "app-release.apk"
+// output.outputFile = new File(outputFile.parent, fileName)
+// }
+// }
+// }
+//在新的gradle上面会报错 outputFile 找不到
+//修改如下
+//android.applicationVariants.all { variant ->
+// variant.outputs.all {
+// //这里修改apk文件名
+// outputFileName = "app-release.apk"
+// }
+//}
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        //这里修改apk文件名
+        outputFileName = "app-release.apk"
+    }
+}
+//按屏幕密度配置单独的 APK
+//如需为不同的屏幕密度创建单独的 APK，请将 android.splits.density 代码块添加到模块的 build.gradle 文件中。
+//android {
+//  ...
+//  splits {
+//    // Configures multiple APKs based on screen density.
+//    density {
+//      // Enables building multiple APKs.
+//      enable true
+//      // Specifies a list of screen densities Gradle should not create APKs for.
+//      exclude "ldpi", "mdpi"
+//      // Alternatively, you can use the following to clear the default list of
+//      // screen densities and specify only the screen densities you want to build
+//      // APKs for:
+//      // reset()
+//      // include "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
+//      // Specifies a list of compatible screen size settings. This property
+//      // configures the <compatible-screens> element in the manifest. You
+//      // typically don't need to configure this manifest property, but it's
+//      // important when building multiple APKs based on screen density.
+//      compatibleScreens 'normal', 'large', 'xlarge'
+//    }
+//  }
+//}
+//按 ABI 配置单独的 APK
+//如需为每个 ABI 创建单独的 APK，请将 android.splits.abi 代码块添加到模块的 build.gradle 文件中。
+//android {
+//  ...
+//  splits {
+//    // Configures multiple APKs based on ABI.
+//    abi {
+//      // Enables building multiple APKs.
+//      enable true
+//      // By default all ABIs are included, so use reset() and include to specify that we only
+//      // want APKs for x86, armeabi-v7a, and mips.
+//      reset()
+//      // Specifies a list of ABIs that Gradle should create APKs for.
+//      include "x86", "armeabi-v7a", "mips"
+//      // Specify that we want to also generate a universal APK that includes all ABIs.
+//      universalApk true
+//    }
+//  }
+//}
+//配置动态版本代码
+//默认情况下，在 Gradle 为项目生成 APK 时，每个 APK 都有相同的版本信息，该信息在模块级 build.gradle 文件中指定。由于 Google Play 商店不允许同一个应用的多个 APK 全都具有相同的版本信息，因此在上传到 Play 商店之前，您需要确保每个 APK 都有自己唯一的 versionCode。
+//为此，您可以使用自定义构建逻辑，在构建时向每个 APK 分配不同的版本代码。例如，在为每个 ABI 创建单独的 APK 时，自动 APK 版本控制将如下所示：
+//android {
+//  ...
+//  defaultConfig {
+//    ...
+//    versionCode 4
+//  }
+//  splits {
+//    ...
+//  }
+//}
+//// Map for the version code that gives each ABI a value.
+//ext.abiCodes = ['armeabi-v7a':1, mips:2, x86:3]
+//// For per-density APKs, create a similar map like this:
+//// ext.densityCodes = ['hdpi': 1, 'xhdpi': 2, 'xxhdpi': 3, 'xxxhdpi': 4]
+//import com.android.build.OutputFile
+//// For each APK output variant, override versionCode with a combination of
+//// ext.abiCodes * 1000 + variant.versionCode. In this example, variant.versionCode
+//// is equal to defaultConfig.versionCode. If you configure product flavors that
+//// define their own versionCode, variant.versionCode uses that value instead.
+//android.applicationVariants.all { variant ->
+//  // Assigns a different version code for each output APK
+//  // other than the universal APK.
+//  variant.outputs.each { output ->
+//    // Stores the value of ext.abiCodes that is associated with the ABI for this variant.
+//    def baseAbiVersionCode =
+//            // Determines the ABI for this variant and returns the mapped value.
+//            project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
+//    // Because abiCodes.get() returns null for ABIs that are not mapped by ext.abiCodes,
+//    // the following code does not override the version code for universal APKs.
+//    // However, because we want universal APKs to have the lowest version code,
+//    // this outcome is desirable.
+//    if (baseAbiVersionCode != null) {
+//      // Assigns the new version code to versionCodeOverride, which changes the version code
+//      // for only the output APK, not for the variant itself. Skipping this step simply
+//      // causes Gradle to use the value of variant.versionCode for the APK.
+//      output.versionCodeOverride =
+//              baseAbiVersionCode * 1000 + variant.versionCode
+//    }
+//  }
+//}
+//组合多个产品变种
+//the first dimension has a higher priority than the second, and so on.
+//flavorDimensions "api", "mode"
+//过滤变体
+//您可以使用模块的 build.gradle 文件中的 variantFilter 代码块过滤构建变体，将您不想要的变体过滤掉。以下示例代码指示 Gradle 不构建任何将“minApi21”和“demo”产品变种组合在一起的变体：
+//android {
+// ...
+// buildTypes {...}
+// flavorDimensions "api", "mode"
+// productFlavors {
+//    demo {...}
+//    full {...}
+//    minApi24 {...}
+//    minApi23 {...}
+//    minApi21 {...}
+//  }
+//  variantFilter { variant ->
+//    def names = variant.flavors*.name
+//    // To check for a build type instead, use variant.buildType.name == "buildType"
+//    if (names.contains("minApi21") && names.contains("demo")) {
+//      // Gradle ignores any variants that satisfy the conditions above.
+//      setIgnore(true)
+//    }
+//  }
+//}
+//更改测试构建类型
+//默认情况下，所有测试均针对调试构建类型运行。您可以使用模块级 build.gradle 文件中的 testBuildType 属性将其更改为针对其他构建类型运行。例如，如果您要针对“staging”构建类型运行测试，请按以下代码段所示对该文件进行修改。
+//android {
+//    ...
+//    testBuildType "staging"
+//}
+
+//优化构建过程
+//s缩减代码
+//Android Studio 使用 R8（它使用 ProGuard 规则文件）缩减代码。对于新项目，Android Studio 将使用 Android SDK 的 tools/proguard/folder 中的默认设置文件 (proguard-android.txt)。如需进一步缩减代码，请尝试使用位于同一位置的 proguard-android-optimize.txt 文件。
+//android {
+//  buildTypes {
+//    release {
+//      minifyEnabled true
+//      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+//                                           'proguard-rules.pro'
+//    }
+//  }
+//  ...
+//}
+//...
+//如需添加特定于每个构建变体的规则，请为每个变种分别配置额外的 proguardFiles 属性。例如，以下示例将 flavor2-rules.pro 添加到“flavor2”。现在，“flavor2”的发布版本使用全部三个规则文件，因为该变种还应用了 release 代码块中的规则文件。
+//android {
+//  ...
+//  buildTypes {
+//    release {
+//      minifyEnabled true
+//      proguardFiles getDefaultProguardFile('proguard-android.txt'),
+//             'proguard-rules.pro'
+//    }
+//  }
+//  productFlavors {
+//    flavor1 {
+//      ...
+//    }
+//    flavor2 {
+//      proguardFile 'flavor2-rules.pro'
+//    }
+//  }
+//}
+//发布应用
+//为您的应用签名
+//虽然 Android Studio 提供了一种从界面中为发布 build 配置签名的简单方式，但您也可以手动配置模块的 build.gradle 文件中的 signingConfigs 代码块：
+//android {
+//  ...
+//  defaultConfig { ... }
+//  // Encapsulates signing configurations.
+//  signingConfigs {
+//    // Creates a signing configuration called "release".
+//    release {
+//      // Specifies the path to your keystore file.
+//      storeFile file("my-release-key.jks")
+//      // Specifies the password for your keystore.
+//      storePassword "password"
+//      // Specifies the identifying name for your key.
+//      keyAlias "my-alias"
+//      // Specifies the password for your key.
+//      keyPassword "password"
+//    }
+//  }
+//  buildTypes {
+//    release {
+//      // Adds the "release" signing configuration to the release build type.
+//      signingConfig signingConfigs.release
+//      ...
+//    }
+//  }
+//}
+//...
+//signingConfigs {
+//        release {
+//            File strFile = new File("../jks/VC.jks")
+//            storeFile file(strFile)
+//            storePassword "vc1234"
+//            keyPassword "vc1234"
+//            keyAlias "vc"
+//        }
+//    }
+//2、
+//signingConfigs {
+//        release {
+//            storeFile file(RELEASE_STOREFILE);
+//            storePassword RELEASE_STORE_PASSWORD;
+//            keyAlias RELEASE_KEY_ALIAS
+//            keyPassword RELEASE_KEY_PASSWORD
+//        }
+//    }
+// buildTypes {
+//        release {
+//            minifyEnabled true   //是否代码混淆
+//            multiDexEnabled true //防止方法数量超过65536导致错误
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+//        }
+// }
+//从项目中移除私密签名信息
+//默认情况下，签名配置将以纯文本形式记录到模块的 build.gradle 文件中。如果您正在与某个团队合作或正在参与某个开源项目，可以执行以下步骤，将此敏感信息从构建文件中移出。
+//在项目的根目录下创建一个名为 keystore.properties 的文件，并使其包含以下信息：
+//storePassword=myStorePassword
+//keyPassword=myKeyPassword
+//keyAlias=myKeyAlias
+//storeFile=myStoreFileLocation
+//在 build.gradle 文件中，按如下方式加载 keystore.properties 文件（必须在 android 代码块前面）：
+//// Creates a variable called keystorePropertiesFile, and initializes it to the
+//// keystore.properties file.
+//def keystorePropertiesFile = rootProject.file("keystore.properties")
+//// Initializes a new Properties() object called keystoreProperties.
+//def keystoreProperties = new Properties()
+//// Loads the keystore.properties file into the keystoreProperties object.
+//keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+//android {
+//  ...
+//}
+//...
+//输入存储在 keystoreProperties 对象中的签名信息：
+//android {
+//  signingConfigs {
+//    config {
+//      keyAlias keystoreProperties['keyAlias']
+//      keyPassword keystoreProperties['keyPassword']
+//      storeFile file(keystoreProperties['storeFile'])
+//      storePassword keystoreProperties['storePassword']
+//    }
+//  }
+//  ...
+//}
+//...
+//点击通知栏中的立即同步。
+
+//简化应用开发
+//g与应用代码共享自定义字段和资源值
+//在构建时，Gradle 将生成 BuildConfig 类，以便应用代码可以检查与当前构建有关的信息。您也可以从 Gradle 构建配置文件中使用 buildConfigField() 方法将自定义字段添加到 BuildConfig 类中，然后在应用的运行时代码中访问这些值。同样，您也可以使用 resValue() 添加应用资源值。
+//android {
+//  ...
+//  buildTypes {
+//    release {
+//      // These values are defined only for the release build, which
+//      // is typically used for full builds and continuous builds.
+//      buildConfigField("String", "BUILD_TIME", "\"${minutesSinceEpoch}\"")
+//      resValue("string", "build_time", "${minutesSinceEpoch}")
+//      ...
+//    }
+//    debug {
+//      // Use static values for incremental builds to ensure that
+//      // resource files and BuildConfig aren't rebuilt with each run.
+//      // If these rebuild dynamically, they can interfere with
+//      // Apply Changes as well as Gradle UP-TO-DATE checks.
+//      buildConfigField("String", "BUILD_TIME", "\"0\"")
+//      resValue("string", "build_time", "0")
+//    }
+//  }
+//}
+//buildTypes {
+//        debug{}
+//        release {}
+//    }
+//    productFlavors {
+//        vanillaDebug {
+//             buildConfigField BOOLEAN, VARIABLE, FALSE
+//        }
+//        vanillaRelease {
+//             buildConfigField BOOLEAN, VARIABLE, TRUE
+//        }
+//        chocolate {
+//             buildConfigField BOOLEAN, VARIABLE, FALSE
+//        }
+//    }
+//在应用代码中，您可以按如下方式访问属性：
+//Log.i(TAG, BuildConfig.BUILD_TIME);
+//Log.i(TAG, getString(R.string.build_time));
+//android {
+//    buildTypes {
+//        debug {
+//            buildConfigField "int", "FOO", "42"
+//            buildConfigField "String", "FOO_STRING", "\"foo\""
+//            buildConfigField "boolean", "LOG", "true"
+//        }
+//        release {
+//            buildConfigField "int", "FOO", "52"
+//            buildConfigField "String", "FOO_STRING", "\"bar\""
+//            buildConfigField "boolean", "LOG", "false"
+//        }
+//    }
+//}
+//You can access them with BuildConfig.FOO
+//Generate Android resources
+//android {
+//    buildTypes {
+//        debug{
+//            resValue "string", "app_name", "My App Name Debug"
+//        }
+//        release {
+//            resValue "string", "app_name", "My App Name"
+//        }
+//    }
+//}
+//You can access them in the usual way with @string/app_name or R.string.app_name
+//与清单共享属性
+//s在某些情况下，您可能需要同时在清单和代码中声明同一属性（例如，在声明 FileProvider 的授权机构时）。如以下示例所示，您可以在模块的 build.gradle 文件中定义一个属性，使其对清单和代码均可用，而不必在多个位置更新同一属性以反映更改。如需了解详情，请阅读将构建变量注入清单。
+//android {
+//  // For settings specific to a product flavor, configure these properties
+//  // for each flavor in the productFlavors block.
+//  defaultConfig {
+//    // Creates a property for the FileProvider authority.
+//    def filesAuthorityValue = applicationId + ".files"
+//    // Creates a placeholder property to use in the manifest.
+//    manifestPlaceholders =
+//      [filesAuthority: filesAuthorityValue]
+//      // Adds a new field for the authority to the BuildConfig class.
+//      buildConfigField("String",
+//                       "FILES_AUTHORITY",
+//                       "\"${filesAuthorityValue}\"")
+//  }
+//  ...
+//}
+//...
+//在清单中，按如下方式访问占位符：
+//<manifest>
+//  ...
+//  <application>
+//    ...
+//    <provider
+//      android:name="android.support.v4.content.FileProvider"
+//      android:authorities="${filesAuthority}"
+//      android:exported="false"
+//      android:grantUriPermissions="true">
+//      ...
+//    </provider>
+//  </application>
+//</manifest>
+//您可以按照如下所示，在应用代码中访问 FILES_AUTHORITY 字段：
+//Uri contentUri = FileProvider.getUriForFile(getContext(),
+//  BuildConfig.FILES_AUTHORITY,
+//  myFile);
+
+//在库模块的build.gradle中，您需要几行额外的代码来告诉它导出风味，以及如果从另一个模块中包含时未指定，则默认使用哪个build变体：
+//android {
+//    defaultPublishConfig "productionRelease"
+//    publishNonDefault true
+//    productFlavors {
+//        alpha {
+//        }
+//        production {
+//        }
+//    }
+//}
+//publishNonDefault仅当某人想要依赖于productionRelease变体以外的其他东西时，才需要使用该位。如果首先在库中设置了多种口味，则可能是这种情况。
+//现在，如果您通过它的build.gradle中的另一个模块添加了一个依赖项：
+//dependencies {
+//    compile project(':module')
+//}
+//productionRelease默认情况下，它取决于变量。如果您想使用非默认变体：
+//dependencies {
+//    compile project(path: ':module', configuration:'alphaDebug')
+//}
+//implementation project(path: ':share_library_temp', configuration: 'a16')

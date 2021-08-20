@@ -1,10 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.whitefancy.permission">
+    <!--    声明应用权限
+    bookmark_border
+    如权限使用工作流程所述，如果您的应用要请求应用权限，您必须在应用的清单文件中声明这些权限。这些声明可帮助应用商店和用户了解您的应用可能会请求的权限组合。
+    执行权限请求的过程取决于权限类型：
+    如果是安装时权限（例如普通权限或签名权限），系统会在安装您的应用时自动为其授予相应权限。
+    如果是运行时权限，并且您的应用安装在搭载 Android 6.0（API 级别 23）或更高版本的设备上，则您必须自己请求权限。
+    注意：请仔细考虑您要在应用清单中声明哪些权限。仅添加您的应用需要的权限。对于应用请求的每项权限，请确保它能为用户提供明确的好处，并且请求方式对用户来说清楚明晰。
+    向应用清单添加声明
+    如需声明应用可能请求的权限，请在应用的清单文件中添加相应的 <uses-permission> 元素。例如，需要访问相机的应用应在清单中添加以下代码行：
+    AndroidManifest.xml
+    <manifest ...>
+        <uses-permission android:name="android.permission.CAMERA"/>
+        <application ...>
+            ...
+        </application>
+    </manifest>
+    -->
+    <!--    将硬件声明为可选
+    某些权限（例如 CAMERA）可让您的应用访问只有部分 Android 设备具有的硬件组件。如果您的应用声明了这类硬件相关权限，请考虑您的应用在没有该硬件的设备上会不会完全无法运行。在大多数情况下，硬件是可选的，因此最好在 <uses-feature> 声明中将 android:required 设置为 false，从而将硬件声明为可选项，如以下代码段所示：
+    AndroidManifest.xml
+    <manifest ...>
+        <application>
+            ...
+        </application>
+        <uses-feature android:name="android.hardware.camera"
+                      android:required="false" />
+    <manifest>
+    注意：如果您未在 <uses-feature> 声明中将 android:required 设置为 false，则 Android 会假定您的应用必须在有该硬件的情况下才能运行。因此，系统会阻止某些设备安装您的应用。
+    -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <!--    按 API 级别声明权限
+    如需仅针对支持运行时权限的设备（即搭载 Android 6.0（API 级别 23）或更高版本的设备）声明某项权限，请添加 uses-permission-sdk-23（而非 uses-permission）元素。
+    不论使用这两个元素中的哪一个，您都可以设置 maxSdkVersion 属性。 该属性表示设备搭载的系统版本高于 maxSdkVersion 时不需要特定权限。
+    -->
+    <!--在运行时请求权限
+    从Android 6.0 (API >= 23)开始，用户开始在运行时向其授予权限，而不是在应用安装时授予。系统权限分为两类：
+    正常权限。如果在AndroidManifest.xml列出了正常权限，系统将自动授予该权限。
+    危险权限。如果在AndroidManifest.xml中列出了危险权限，用户必须明确批准您的应用使用这些权限。
+    -->
+    <!--    权限类型
+    Android 将权限分为不同的类型，包括安装时权限、运行时权限和特殊权限。每种权限类型都指明了当系统授予应用该权限后，应用可以访问的受限数据范围以及应用可以执行的受限操作范围。
+    安装时权限
+    安装时权限授予应用对受限数据的受限访问权限，并允许应用执行对系统或其他应用只有最低影响的受限操作。如果您在应用中声明了安装时权限，系统会在用户安装您的应用时自动授予应用相应权限。应用商店会在用户查看应用详情页面时向其显示安装时权限通知，如图 2 所示。
+    Android 提供多个安装时权限子类型，包括普通权限和签名权限。
+    普通权限
+    此类权限允许访问超出应用沙盒的数据和执行超出应用沙盒的操作。但是，这些数据和操作对用户隐私及对其他应用的操作带来的风险非常小。
+    系统会为普通权限分配“normal”保护级别，如权限 API 参考文档页面中所示。
+    签名权限
+    当应用声明了其他应用已定义的签名权限时，如果两个应用使用同一证书进行签名，系统会在安装时向前者授予该权限。否则，系统无法向前者授予该权限。
+    注意：有些签名权限不适合第三方应用使用。
+    系统会为签名权限分配“signature”保护级别，如权限 API 参考文档页面中所示。
+    运行时权限
+        运行时权限也称为危险权限，此类权限授予应用对受限数据的额外访问权限，并允许应用执行对系统和其他应用具有更严重影响的受限操作。因此，您需要先在应用中请求运行时权限，然后才能访问受限数据或执行受限操作。当应用请求运行时权限时，系统会显示运行时权限提示，如图 3 所示。
+    许多运行时权限会访问用户私有数据，这是一种特殊的受限数据，其中包含可能比较敏感的信息。例如，位置信息和联系信息就属于用户私有数据。
+    系统会为运行时权限分配“dangerous”保护级别，如权限 API 参考文档页面中所示。
 
+    特殊权限
+    特殊权限与特定的应用操作相对应。只有平台和原始设备制造商 (OEM) 可以定义特殊权限。此外，如果平台和 OEM 想要防止有人执行功能特别强大的操作（例如通过其他应用绘图），通常会定义特殊权限。
+    系统设置中的特殊应用访问权限页面包含一组用户可切换的操作。其中的许多操作都以特殊权限的形式实现。
+    每项特殊权限都有自己的实现细节。如需查看使用每项特殊权限的说明，请访问权限 API 参考文档页面。系统会为特殊权限分配“appop”保护级别。
+    -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--
+    在测试 8.0手机上版本升级功能是发现下载完apk文件之后无法跳转安装页面，通过报错信息发现是缺少android.permission.REQUEST_INSTALL_PACKAGES，Google从8.0 把未知应用的安装权限的管理放到了每个app上，每个app都有允许安装未知应用的设置开关。
+    解决方案：
+    在清单文件中声明
+     <uses-permissionandroid:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    下载完点击安装判断是否有权限
+    -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="true"
@@ -22,6 +92,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--        限制与其他应用的交互
+        bookmark_border
+        权限不仅仅用于请求系统功能。您还可以限制其他应用与您的应用组件交互的方式。
+        本指南介绍如何查看另一应用已声明的权限集。本指南还介绍了如何配置 Activity、服务、Content Provider 和广播接收器，以限制其他应用与您的应用交互的方式。最后，本页介绍了在应用之间强制执行交互模式的多种其他方式，为您提供相关指导。
+        查看另一应用的权限
+        如需查看另一应用声明的权限集，请使用设备或模拟器完成以下步骤：
+        打开应用的应用信息屏幕。
+        选择权限。系统会加载应用权限屏幕。
+        此屏幕会显示一组权限组。系统会整理应用已声明到这些权限组的一组权限。
+        限制与应用的 Activity 的交互
+        使用 android:permission 属性应用于清单中 <activity> 标记的权限可限制谁能启动该 Activity。系统会在 Context.startActivity() 和 Activity.startActivityForResult() 期间检查权限。如果调用方没有所需的权限，将会发生 SecurityException。
+        限制与应用的服务的交互
+        使用 android:permission 属性应用于清单中 <service> 标记的权限可限制谁能启动或绑定到关联的 Service。系统会在 Context.startService()、Context.stopService() 和 Context.bindService() 期间检查权限。如果调用方没有所需的权限，将会发生 SecurityException。
+        限制与应用的内容提供程序的交互
+        使用 android:permission 属性应用于 <provider> 标记的权限可限制谁能访问 ContentProvider 中的数据。（内容提供程序有重要的附加安全工具可供其使用，称为 URI 权限，将在后面介绍。）与其他组件不同，您可以设置两个单独的权限属性：android:readPermission 限制谁可以读取提供程序，android:writePermission 限制谁可以写入提供程序。请注意，如果提供程序有读取和写入权限保护，仅拥有写入权限并不表示您可以读取提供程序。
+        第一次检索提供程序时将会检查权限（如果您既没有读取权限也没有写入权限 SecurityException），对提供程序执行操作时也会检查权限。使用 ContentResolver.query() 需要拥有读取权限；使用 ContentResolver.insert()、ContentResolver.update() 或 ContentResolver.delete() 需要写入权限。在所有这些情况下，没有所需的权限将会导致 SecurityException。
+        根据 URI 授予权限
+        系统让您可以进一步对其他应用如何访问您应用的内容提供程序进行精细控制。具体而言，您的内容提供程序可以通过读取和写入权限保护自己，同时仍允许提供程序的直接客户端与其他应用共享特定 URI。如需声明您的应用支持此模式，请使用 android:grantUriPermissions 属性或 <grant-uri-permission 元素。
+        您还可以根据 URI 授予权限。在启动 Activity 或将结果返回给 Activity 时，请设置 Intent.FLAG_GRANT_READ_URI_PERMISSION intent 标志、Intent.FLAG_GRANT_WRITE_URI_PERMISSION intent 标志或者同时设置两者。这样便可针对 intent 中包含的数据 URI 分别向另一个应用授予读取权限、写入权限和读取/写入权限。无论从更笼统的角度来说这另一个应用是否有权访问内容提供程序中的数据，它都会获得针对特定 URI 的上述权限。
+        例如，假设用户正在您的应用中查看电子邮件，并且此电子邮件包含一个图片附件。一般来说，其他应用本该无法访问电子邮件内容，但它们可能希望查看这张图片。您的应用可以使用 intent 和 Intent.FLAG_GRANT_READ_URI_PERMISSION intent 标志，以便图片查看应用查看这张图片。
+        另一个需要考虑的因素是应用可见性。如果您的应用以 Android 11（API 级别 30）或更高版本为目标平台，在默认情况下，系统会自动让部分应用对您的应用可见，但会隐藏其他应用。如果您的应用具有内容提供程序，并且已向其他应用授予 URI 权限，那么您的应用会自动对其他应用可见。
+        如需了解详情，请查看介绍 grantUriPermission()、revokeUriPermission() 和 checkUriPermission() 方法的参考资料。
+        限制与应用的广播接收器的交互
+        使用 android:permission 属性应用于 <receiver> 标记的权限可限制谁能向关联的 BroadcastReceiver 发送广播。系统会在 Context.sendBroadcast() 返回后检查权限，因为系统会尝试将提交的广播传递到指定的接收器。因此，权限失效不会导致向调用方抛回异常；只是不会传递该 Intent。
+        同样，可以向 Context.registerReceiver() 提供权限，用于控制谁能向以编程方式注册的接收器发送广播。另一方面，可以在调用 Context.sendBroadcast() 时提供权限，以限制允许哪些广播接收器接收广播。
+        请注意，接收器和广播方可能都需要权限。发生这种情况时，两项权限检查都必须通过后方可将 intent 传递到关联的目标。如需了解详情，请参阅通过权限限制广播。
+        其他针对权限的检查
+        您还可以通过其他一些实用方式来检查权限：
+        在调用某项服务期间，将权限字符串传入 Context.checkCallingPermission()。此方法会返回一个整数，指示是否已向当前调用进程授予权限。请注意，仅在执行从另一个进程传入的调用（通常是通过从服务发布的 IDL 接口或者指定给另一进程的某种其他方式完成）时才可使用此方法。
+        如需检查另一进程是否已获得特定权限，请将该进程 (PID) 传入 Context.checkPermission()。
+        如需检查其他软件包是否已获得特定权限，请将该软件包的名称传入 PackageManager.checkPermission()。
+        -->
+        <service
+            android:name=".MyInstanceIDService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
 
     </application>
 

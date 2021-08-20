@@ -1,0 +1,14 @@
+<paths>
+    <files-path
+        name="captured_media"
+        path="captured_media/" />
+    <external-path
+        name="data"
+        path="Android" />
+    <cache-path
+        name="cache"
+        path="appCache" />
+    <external-path
+        name="external"
+        path="dfs" />
+</paths>

@@ -18,7 +18,22 @@ allprojects {
         jcenter()
     }
 }
+//顶层构建文件build.gradle
+//顶层 build.gradle 文件位于项目的根目录下，用于定义适用于项目中所有模块的构建配置。默认情况下，顶层构建文件使用 buildscript 代码块定义项目中所有模块共用的 Gradle 代码库和依赖项。两处repositories的闭包中都声明了jcenter()这行配置，那其实它是一个代码托管仓库，很多Android开源项目都会选择将代码托管到jcenter上，声明了这行配置之后，我们就可以在项目中轻松引用任何jcenter上的开源项目了。
+//接下来，dependencies闭包中使用classpath声明了一个Gradle插件。
+//
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+//配置项目全局属性
+//对于包含多个模块的 Android 项目，可能有必要在项目级别定义某些属性并在所有模块之间共享这些属性。为此，您可以将额外的属性添加到顶层 build.gradle 文件内的 ext 代码块中
+//ext {
+//    // The following are only a few examples of the types of properties you can define.
+//    compileSdkVersion = 28
+//    // You can also create properties to specify versions for dependencies.
+//    // Having consistent versions between modules can avoid conflicts with behavior.
+//    supportLibVersion = "28.0.0"
+//    ...
+//}
+//虽然 Gradle 可让您在模块级别定义项目全局属性，但您应避免这样做，因为这样会导致共享这些属性的模块相互结合。模块结合使得以后将模块作为独立项目导出更加困难，并实际妨碍 Gradle 利用并行项目执行加快多模块构建。
