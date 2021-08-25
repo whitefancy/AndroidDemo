@@ -14,8 +14,12 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url "https://mvn.getui.com/nexus/content/repositories/releases/"
+        }
         google()
         jcenter()
+
     }
 }
 //顶层构建文件build.gradle
@@ -36,4 +40,15 @@ task clean(type: Delete) {
 //    supportLibVersion = "28.0.0"
 //    ...
 //}
-//虽然 Gradle 可让您在模块级别定义项目全局属性，但您应避免这样做，因为这样会导致共享这些属性的模块相互结合。模块结合使得以后将模块作为独立项目导出更加困难，并实际妨碍 Gradle 利用并行项目执行加快多模块构建。
+//虽然 Gradle 可让您在模块级别定义项目全局属性，但您应避免这样做，因为这样会导致共享这些属性的模块相互结合。
+// 模块结合使得以后将模块作为独立项目导出更加困难，并实际妨碍 Gradle 利用并行项目执行加快多模块构建。
+ext {
+    //个推APPID，APP_KEY 请填写您获取到的值
+    GETUI_APP_ID = ""
+    GETUI_APP_KEY = ""
+    //注意：该 MASTERSECRET 仅用于测试推送功能使用，对外发布请勿配置该值，避免泄漏您的 MASTERSECRET 的值。
+    MASTERSECRET = ""
+
+    //server url
+    SERVER_URL = "https://restapi.getui.com/"
+}

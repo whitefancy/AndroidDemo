@@ -1,3 +1,4 @@
+include ':getui_app'
 include ':permission'
 include ':heyer_app'
 include ':custorm_notification'
