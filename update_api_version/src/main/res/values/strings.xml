@@ -9,4 +9,194 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_lifestyle">LifestyleActivity</string>
+</resources><!--文件层次结构
+MyProject/
+ src/
+ MyActivity.java
+ res/
+ drawable/
+ graphic.png
+ layout/
+ main.xml
+ info.xml
+ mipmap/
+ icon.png
+ values/
+ strings.xml
+如此示例所示，res/ 目录包含所有资源（在子目录中）：一个图像资源、两个布局资源、启动器图标的 mipmap/ 目录以及一个字符串资源文件。资源目录名称非常重要。
+. 项目 res/ 目录中支持的资源目录。
+目录	资源类型
+animator/	用于定义属性动画的 XML 文件。
+anim/	用于定义渐变动画的 XML 文件。（属性动画也可保存在此目录中，但为了区分这两种类型，属性动画首选 animator/ 目录。）
+color/	用于定义颜色状态列表的 XML 文件。请参阅颜色状态列表资源
+drawable/
+位图文件（.png、.9.png、.jpg、.gif）或编译为以下可绘制对象资源子类型的 XML 文件：
+位图文件
+九宫格（可调整大小的位图）
+状态列表
+形状
+动画可绘制对象
+其他可绘制对象
+请参阅 Drawable 资源。
+mipmap/	适用于不同启动器图标密度的可绘制对象文件。如需了解有关使用 mipmap/ 文件夹管理启动器图标的详细信息，请参阅管理项目概览。
+layout/	用于定义用户界面布局的 XML 文件。请参阅布局资源。
+menu/	用于定义应用菜单（如选项菜单、上下文菜单或子菜单）的 XML 文件。请参阅菜单资源。
+raw/
+需以原始形式保存的任意文件。如要使用原始 InputStream 打开这些资源，请使用资源 ID（即 R.raw.filename）调用 Resources.openRawResource()。
+但是，如需访问原始文件名和文件层次结构，则可以考虑将某些资源保存在 assets/ 目录（而非 res/raw/）下。assets/ 中的文件没有资源 ID，因此您只能使用 AssetManager 读取这些文件。
+values/
+包含字符串、整型数和颜色等简单值的 XML 文件。
+其他 res/ 子目录中的 XML 资源文件会根据 XML 文件名定义单个资源，而 values/ 目录中的文件可描述多个资源。对于此目录中的文件，<resources> 元素的每个子元素均会定义一个资源。例如，<string> 元素会创建 R.string 资源，<color> 元素会创建 R.color 资源。
+由于每个资源均使用自己的 XML 元素进行定义，因此您可以随意命名文件，并在某个文件中放入不同的资源类型。但是，您可能需要将独特的资源类型放在不同的文件中，使其一目了然。例如，对于可在此目录中创建的资源，下面给出了相应的文件名约定：
+arrays.xml：资源数组（类型数组）。
+colors.xml：颜色值。
+dimens.xml：尺寸值。
+strings.xml：字符串值。
+styles.xml：样式。
+请参阅字符串资源、样式资源和更多资源类型。
+xml/	可在运行时通过调用 Resources.getXML() 读取的任意 XML 文件。各种 XML 配置文件（如可搜索配置）都必须保存在此处。
+font/	带有扩展名的字体文件（如 .ttf、.otf 或 .ttc），或包含 <font-family> 元素的 XML 文件。如需详细了解作为资源的字体，请参阅 XML 中的字体。
+注意：切勿将资源文件直接保存在 res/ 目录内，因为这样会造成编译错误。
+在表 1 定义的子目录中，保存的资源为“默认”资源。换言之，这些资源定义应用的默认设计和内容。然而，不同类型的 Android 设备可能需要不同类型的资源。例如，如果设备屏幕比标准屏幕大，则应提供不同的布局资源，从而充分利用额外的屏幕空间。或者，如果设备的语言设置不同，则应提供不同的字符串资源，以便将界面中的文本转换为其他语言。如要为不同设备配置提供这些不同资源，除默认资源以外，您还需提供备用资源。
+提供备用资源
+几乎每个应用都应提供备用资源，以便支持特定的设备配置。例如，对于不同的屏幕密度和语言，您应分别加入备用可绘制对象资源和备用字符串资源。在运行时，Android 会检测当前设备配置并为应用加载合适的资源。
+为一组资源指定配置特定的备用资源：
+在 res/ 中创建以 <resources_name>-<config_qualifier> 形式命名的新目录。
+<resources_name> 是相应默认资源的目录名称（如表 1 中所定义）。
+<qualifier> 是指定要使用这些资源的各个配置的名称（如表 2 中所定义）。
+您可以追加多个 <qualifier>。以短划线将其分隔。
+注意：追加多个限定符时，必须按照表 2 中列出的相同顺序放置限定符。如果限定符的顺序错误，则该资源将被忽略。
+将相应的备用资源保存在此新目录下。这些资源文件必须与默认资源文件完全同名。
+为避免出现任何问题，请始终包含一组默认资源（一组不带限定符的资源）。
+表 2 按优先级顺序列出了有效的配置限定符；如果对资源目录使用多个限定符，则必须按照表中所列顺序将其添加到目录名称中。
+https://developer.android.com/guide/topics/resources/providing-resources#AlternativeResources
+创建别名资源
+如果您想将某一资源用于多种设备配置（但不想以默认资源的形式提供该资源），则无需将同一资源放入多个备用资源目录中。相反，您可以（在某些情况下）创建备用资源，充当默认资源目录中所保存资源的别名。
+请注意：并非所有资源都会提供相应机制，以便您创建指向其他资源的别名。特别是，xml/ 目录中的动画资源、菜单资源、原始资源及其他未指定资源均不提供此功能。
+假设您有一个应用图标 icon.png，并且需要用于不同语言区域的独特版本。但是，加拿大英语和加拿大法语这两种语言区域需使用同一版本。您可能会认为，需要将相同图像复制到加拿大英语和加拿大法语所对应的资源目录中，但事实并非如此。相反，您可以将用于二者的图像保存为 icon_ca.png（除 icon.png 以外的任何名称），并将其放入默认的 res/drawable/ 目录中。然后，在 res/drawable-en-rCA/ 和 res/drawable-fr-rCA/ 中创建 icon.xml 文件，使用 <bitmap> 元素引用 icon_ca.png 资源。这样，您只需存储 PNG 文件的一个版本和两个指向该版本的小型 XML 文件。（XML 文件示例如下。）
+可绘制对象
+如要创建指向现有可绘制对象的别名，请使用 <drawable> 元素。例如：
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ <drawable name="icon">@drawable/icon_ca</drawable>
 </resources>
+如果将此文件保存为 drawables.xml（例如，在备用资源目录中保存为 res/values-en-rCA/），则系统会将其编译到可作为 R.drawable.icon 引用的资源中，但该文件实际是 R.drawable.icon_ca 资源（保存在 res/drawable/ 中）的别名。
+布局
+如要创建指向现有布局的别名，请使用包装在 <merge> 中的 <include> 元素。例如：
+<?xml version="1.0" encoding="utf-8"?>
+<merge>
+ <include layout="@layout/main_ltr"/>
+</merge>
+如果将此文件保存为 main.xml，则系统会将其编译到可作为 R.layout.main 引用的资源中，但该文件实际是 R.layout.main_ltr 资源的别名。
+字符串和其他简单值
+如要创建指向现有字符串的别名，您只需将所需字符串的资源 ID 用作新字符串的值。例如：
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ <string name="hello">Hello</string>
+ <string name="hi">@string/hello</string>
+</resources>
+R.string.hi 资源现在是 R.string.hello 的别名。
+其他简单值的原理相同。例如，颜色：
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ <color name="red">#f00</color>
+ <color name="highlight">@color/red</color>
+</resources>
+访问应用资源
+在应用中提供资源后，您可通过引用其资源 ID 来应用该资源。所有资源 ID 都在您项目的 R 类中进行定义，该类由 aapt 工具自动生成。
+编译应用时，aapt 会生成 R 类，其中包含 res/ 目录中所有资源的资源 ID。每个资源类型都有对应的 R 子类（例如，R.drawable 对应所有可绘制对象资源），而该类型的每个资源都有对应的静态整型数（例如，R.drawable.icon）。该整型数就是可用来检索资源的资源 ID。
+尽管资源 ID 是在 R 类中指定的，但您完全不需要在该类中查找资源 ID。资源 ID 始终由以下部分组成：
+资源类型：每个资源都被分到一个“类型”组中，例如 string、drawable 和 layout。如需了解有关不同类型的详细信息，请参阅资源类型。
+资源名称，它是不包括扩展名的文件名；或是 XML android:name 属性中的值（如资源是字符串等简单值）。
+访问资源的方法有两种：
+在代码中：使用来自 R 类子类的静态整型数，例如：
+R.string.hello
+string 为资源类型，hello 为资源名称。当您提供此格式的资源 ID 时，有许多 Android API 可以访问您的资源。请参阅在代码中访问资源。
+在 XML 中：使用同样与 R 类中所定义资源 ID 对应的特殊 XML 语法，例如：
+@string/hello
+string 为资源类型，hello 为资源名称。只要 XML 资源中的某处拥有您在资源中提供的值，则您便可在该 XML 资源中使用此语法。请参阅在 XML 中访问资源。
+您还可利用 Resources 中的方法检索个别资源，并且您可通过 getResources() 获得该资源的实例。
+语法
+以下是在代码中引用资源的语法：
+[<package_name>.]R.<resource_type>.<resource_name>
+<package_name> 是资源所在包的名称（如果引用的资源来自您自己的资源包，则不需要）。
+<resource_type> 是资源类型的 R 子类。
+<resource_name> 是不带扩展名的资源文件名，或 XML 元素中的 android:name 属性值（若资源是简单值）。
+资源类型概览 https://developer.android.com/guide/topics/resources/available-resources
+  public static int getDialogId(Context context, String defType, String name){
+        int id=0;
+        try {
+            id = context.getResources().getIdentifier(name, defType, context.getPackageName());
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return id;
+    }
+更多资源类型
+将其他原始值定义为静态资源，具体包括：
+Bool
+包含布尔值的 XML 资源。
+颜色
+包含颜色值（十六进制颜色）的 XML 资源。
+维度
+包含维度值（及度量单位）的 XML 资源。
+ID
+为应用资源和组件提供唯一标识符的 XML 资源。
+整数
+包含整数值的 XML 资源。
+整数数组
+提供整数数组的 XML 资源。
+类型化数组
+提供 TypedArray（可用于可绘制对象数组）的 XML 资源。
+注意：切勿手动修改 R.java 文件 — 在您编译项目时，aapt 工具会生成该文件。下次编译时，所有更改都会被覆盖。
+在 XML 中访问资源
+您可以使用对现有资源的引用，为某些 XML 属性和元素定义值。创建布局文件时，为给您的微件提供字符串和图像，您会经常这样做。
+例如，如果您为布局添加 Button，则应为按钮文本使用字符串资源：
+<Button
+ android:layout_width="fill_parent"
+ android:layout_height="wrap_content"
+ android:text="@string/submit" />
+语法
+以下是在 XML 资源中引用资源的语法：
+@[<package_name>:]<resource_type>/<resource_name>
+<package_name> 是资源所在包的名称（如果引用的资源来自相同资源包，则不需要）
+<resource_type> 是资源类型的 R 子类
+<resource_name> 是不带扩展名的资源文件名，或 XML 元素中的 android:name 属性值（若资源是简单值）。
+在此情况下，您无需在资源引用中指定包名称，因为资源来自您自己的资源包。如要引用系统资源，则您需要加入包名称。例如：
+<?xml version="1.0" encoding="utf-8"?>
+<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+ android:layout_width="fill_parent"
+ android:layout_height="fill_parent"
+ android:textColor="@android:color/secondary_text_dark"
+android:text="@string/hello" />
+您甚至可以在 XML 中使用资源创建别名。例如，您可以创建一个可绘制对象资源，将其作为另一个可绘制对象资源的别名：
+<?xml version="1.0" encoding="utf-8"?>
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+ android:src="@drawable/other_drawable" />
+这听起来多余，但对使用备用资源可能很有帮助。
+引用样式属性
+利用样式属性资源，您可以在当前应用的主题背景中引用某个属性的值。借助引用样式属性，在自定义界面元素的外观时，您无需采用提供硬编码值这种方式，您可以通过为其设置样式，以匹配当前主题背景提供的标准变体来达成目的。引用样式属性的实质作用是，“在当前主题背景中使用此属性定义的样式”。
+如要引用样式属性，名称语法几乎与普通资源格式完全相同，区别在于您需将 at 符号 (@) 改为问号 (?)，并且资源类型部分为可选项。例如：
+?[<package_name>:][<resource_type>/]<resource_name>
+例如，以下代码展示了如何通过引用属性来设置文本颜色设，使其匹配系统主题背景的“基本”文本颜色：
+<EditText id="text"
+ android:layout_width="fill_parent"
+ android:layout_height="wrap_content"
+ android:textColor="?android:textColorSecondary"
+ android:text="@string/hello_world" />
+在以上代码中，android:textColor 属性指定当前主题背景中某个样式属性的名称。Android 现在会将应用于 android:textColorSecondary 样式属性的值用作此微件中 android:textColor 的值。由于系统资源工具知道此环境中肯定存在某个属性资源，因此您无需显式声明类型（类型应为 ?android:attr/textColorSecondary）— 您可以将 attr 类型排除在外。
+访问原始文件
+尽管并不常见，但您的确有可能需要访问原始文件和目录。如果确有需要，则将文件保存在 res/ 中并没有用，因为从 res/ 读取资源的唯一方法是使用资源 ID。您可以改为将资源保存在 assets/ 目录中。
+保存在 assets/ 目录中的文件没有资源 ID，因此您无法通过 R 类或在 XML 资源中引用它们。您可以改为采用类似普通文件系统的方式查询 assets/ 目录中的文件，并利用 AssetManager 读取原始数据。
+不过，如果您只需要读取原始数据（例如视频文件或音频文件）的能力，则可将文件保存在 res/raw/ 目录中，并利用 openRawResource() 读取字节流。
+访问平台资源
+Android 包含许多标准资源，例如样式、主题背景和布局。如要访问这些资源，请通过 android 包名称限定您的资源引用。例如，您可以将 Android 提供的布局资源用于 ListAdapter 中的列表项：
+setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myarray));
+在上例中，simple_list_item_1 是平台为 ListView 中的项目所定义的布局资源。您可以使用该资源，而不必自行创建列表项布局。
+例如，如果应用支持多种语言，请始终包含不带语言和区域限定符的 values/ 目录（用于保存字符串）。相反，如果您将所有字符串文件放入带有语言和区域限定符的目录中，且设备语言已设为您的字符串所不支持的语言，则应用在该设备上运行时将崩溃。但是，只要提供默认 values/ 资源，应用便会正常运行（即使用户不理解该语言，但总比崩溃要好）。
+同样，如果您根据屏幕方向提供不同的布局资源，则应选择一个方向作为默认方向。例如，不要在 layout-land/ 和 layout-port/ 中分别提供横向和纵向的布局资源，而是保留其一作为默认设置，例如：layout/ 用于横向，layout-port/ 用于纵向。
+提供默认资源至关重要，这不仅是因为应用可能会在超出预期的配置上运行，也因为新版 Android 有时会添加旧版本不支持的配置限定符。如果您使用新的资源限定符，但希望维持对旧版 Android 的代码兼容性，则当旧版 Android 运行应用时，应用将在无默认资源的情况下崩溃，因为此时它无法使用以新限定符命名的资源。例如，如果您将 minSdkVersion 设置为 4，并使用夜间模式（night 或 notnight，API 级别 8 中的新增配置）限定所有可绘制对象资源，则 API 级别 4 设备无法访问可绘制对象资源，而且会崩溃。在此情况下，您可能希望 notnight 成为默认资源，所以您应排除该限定符，使可绘制对象资源位于 drawable/ 或 drawable-night/ 中。
+例外：屏幕像素密度是唯一一个未因冲突而被淘汰的限定符。尽管设备的屏幕密度为 hdpi，但是 drawable-port-ldpi/ 未被淘汰，因为此时每个屏幕密度均视为匹配。如需了解详细信息，请参阅支持多种屏幕文档。
+-->

@@ -501,3 +501,86 @@ android.applicationVariants.all { variant ->
 //    compile project(path: ':module', configuration:'alphaDebug')
 //}
 //implementation project(path: ':share_library_temp', configuration: 'a16')
+
+//Release和Debug的区别
+//Apk
+//主要区别在于调试标志和签名密钥：
+//对于调试版本，将使用启用了调试标志的默认调试签名密钥对apk进行签名。
+//对于发布密钥，您将必须明确指定用于签名的密钥，并且调试标志将关闭，以便无法对其进行调试。
+//可以为发布版本打开Proguard。（也适用于调试版本，但不建议使用）。此步骤需要明确完成，默认情况下为false。
+//发行版apk必须先解压缩，然后手动修改，再由调试证书重新压缩+签名，以便其他人可以调试。每个用户总是可以访问代码，发布是“模糊的”而不是“阻止的”。您不能向必须向用户隐藏代码的用户，该用户必须能够运行该代码，在某个阶段该代码必须对用户可用，并且此时熟练的用户可以复制该代码并进行探索/反向工程。“混淆”只会使过程更加困难。
+//调试版本实际上是一个完全自包含的apk版本，它甚至可以部署在生产环境中，但缺乏一些代码压缩/优化/缩小以及开发人员的限制。身份验证。
+//请注意，代码收缩会减慢构建时间，因此，如果可能，应避免在调试构建中使用它。但是，务必在用于测试的最终APK上启用代码收缩功能，因为如果您没有充分自定义要保留的代码，它可能会引入错误。
+//如果我们使用debug.apk将该应用程序安装在设备/模拟器上，则可以
+//*使用调试器调试
+//*使用android studio profiler配置cpu，内存，网络
+//*请参阅logcat中的日志
+//*使用布局检查器调试布局
+//如果使用，release.apk我们将无法使用上述功能，并且我们将某些功能/库配置为以特定的输出类型工作（就像我们只能在debug apk中使用leakCanary）
+//Build
+//检查您是否在Java文件中使用了诸如BuildConfig.DEBUG之类的东西。那一定是造成问题的原因。
+//我曾经面临着同样的问题。我发现我正在使用类似的代码if(BuildConfig.DEBUG) { Toast(...); }。那是我的问题。我将其更改为if(!BuildConfig.DEBUG) { Toast(...); }使我的应用程序可以在该应用程序的发行版中工作。
+//也许问题与APK的签署有关。如果使用，debuggable true则使用通用调试密钥库对应用程序进行签名，并且一切正常。相反，如果将其删除，则必须提供
+//storeFile file("myreleasekey.keystore")
+//storePassword "password"
+//keyAlias "MyReleaseKey"
+//keyPassword "password"
+//49
+//让我感到困惑的是，当我调试该应用程序时，它运行良好并输出“ notNULL”。我可以看到该对象的每个属性均已正确反序列化。但是，当我从Android Studio生成已发布的apk并在手机上运行apk时，输出“ isNULL”，则json解析失败！
+//您的release构建类型-中已启用ProGuard minifyEnabled true。它通过更改类/变量名称来混淆代码。
+//您应该注释您的类属性，以便Gson知道要查找的内容：
+//public class ReturnData {
+//    @SerializedName("reply_code")
+//    public String reply_code;
+//    @SerializedName("userinfo")
+//    public userinfo userinfo;
+//}
+//public class userinfo {
+//    @SerializedName("username")
+//    public String username;
+//    @SerializedName("userip")
+//    public String userip;
+//}
+//这样，Gson不会查看属性的名称，而是会查看@SerializedName注释。
+//创建应用程序时，您使用调试版本进行工作（开发应用程序）。
+//•应用就绪后，您将部署（发布到商店）发行版本。
+//•版本构建始终更快，更优化，因为它不包含任何调试信息。
+//•调试版本包含其他信息，可帮助您开发应用程序，因此它可能比发行版版本慢。此外，它的大小可能更大，当然，您不想将调试信息部署到用户，更不用说使反向工程变得更加简单。
+//•您用于应用程序的库的构建类型无关。尽管您所使用的库的开发人员可以为您提供调试和发布版本，以帮助您进行开发，但它们始终应作为发行版进行部署。如果它们为您提供了两种变体，则采用与上述相同的逻辑，并且Android Studio将根据您当前的构建类型选择正确的逻辑。
+//您可以（应该）在项目中使用库的发行版。它与您的项目构建变体无关，因为您没有使用库源代码，而是使用编译后的输出。
+//关于您的项目/应用程序，您应该将Debug变体用于调试目的Release，例如，当您已经想在Play商店等市场中发布应用时，应使用变体。
+//是的，在发布模式下的性能要比调试更高，因为在应用程序运行时不再运行许多额外的日志。当项目是一个拥有数百个类和库的大型项目时，这尤其明智。
+//Android应用程序构建会引发发布错误，调试不会
+//-为什么快速修复不是真正的解决方案-
+//您可以将此选项放在build.gradle部分的android块中
+//        lintOptions {
+//          checkReleaseBuilds false
+//        }
+//曾经面对这个问题，这是一个APPT2问题（至少在我的情况下）。从共享的屏幕截图中，它告诉您重复的资源。在执行js捆绑并且创建了几个包含资源的文件夹之后，可能会发生这种情况。
+//以下是我如何处理APPT2问题的方法：
+//尝试浏览至（android / app / build / intermediates / res / merged / release /
+//查看是否有任何drawable- *文件夹
+//执行 rm -rf android/app/build/intermediates/res/merged/release/drawable-*)
+//再试一次./gradlew assembleRelease（您可能仍然无法在此处构建）
+//回到同一文件夹，删除.DS_Store
+//再次建立
+//希望成功
+//猜您添加的某些依赖项中有appcompat-v4导致错误的信息，不太确定
+//可能的解决方案：
+//尝试删除zip4j_1.3.2.jar，然后再次添加 compile 'com.android.support:appcompat-v7:24.2.0'
+//@ th3pat3l提出的一个：添加
+//compile (compile 'com.android.support:appcompat-v7:25.0.0') {
+//    exclude module: 'support-v4'
+//}
+//Api版本> 14的提示：
+//避免使用jar，因为它们是打包的，您几乎不能更改它们，而是尝试通过添加一个简单的项目在build.gradle文件中使用它们 compile ''xxx.xx.xx
+//导入旧的Eclipse项目时，我也遇到了此类问题。它在项目中作为jar文件出现了一些旧的依赖关系。
+//第一种方法只是删除
+//compile fileTree(dir: 'libs', include: '*.jar')
+//在gradle文件中
+//并在gradle文件中添加依赖项。
+//这个对我有用 ..
+//第二种方法您现在可能已经修复了此问题，但是请确保将其解决，请尝试将其添加到您的 build.gradle:
+//configurations {
+//    all*.exclude group: 'com.android.support', module: 'support-v4'
+//}
