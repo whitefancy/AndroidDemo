@@ -5,4 +5,18 @@
     android:layout_height="match_parent"
     android:scrollbars="vertical">
 
-</androidx.recyclerview.widget.RecyclerView>
+</androidx.recyclerview.widget.RecyclerView><!--对于新的 API 版本，在 build.gradle - 项目依赖项中添加：
+
+implementation 'androidx.recyclerview:recyclerview:1.0.0'
+在布局中，您应该替换：
+
+android.support.v7.widget.RecyclerView
+和
+
+androidx.recyclerview.widget.RecyclerView
+如果您不想使用 Androidx，则在您的gradle.properties文件中执行以下操作：
+
+android.useAndroidX=false
+
+android.enableJetifier=false
+-->

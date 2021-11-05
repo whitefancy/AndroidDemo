@@ -1,9 +1,11 @@
 package com.whitefancy.wallbreaker;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.SpannableString;
@@ -33,7 +35,8 @@ public class MainActivity2 extends AppCompatActivity {
     public TextView textView;
     public static Handler handler;
     MethodBean game;
-    MethodBean device;
+    String device1;
+    private MethodBean device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,10 @@ public class MainActivity2 extends AppCompatActivity {
         bundle.putString("result", result);
         message.setData(bundle);
         handler.sendMessage(message);
+    }
+
+    private void showInText(String tag, String result) {
+        showInText(result);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -158,7 +165,89 @@ public class MainActivity2 extends AppCompatActivity {
     public void Logout(View view) {
     }
 
+    private String phoneNumber;
+    private String phoneModel;
+    private String SdkVersion;
+    private String OsVersion;
+    private String board;
+    private String brand;
+    private String cpu_abi;
+    private String display;
+    private String fingerprint;
+    private String host;
+    private String updateId;
+    private String manufacturer;
+    private String product;
+    private String tags;
+    private long time;
+    private String type;
+    private String user;
+
+
+    private static final String TAG = "MainActivity";
+
     public void DeviceInfo(View view) {
+        TelephonyManager phoneMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        //经过测试，无法获取
+//        phoneNumber = phoneMgr.getLine1Number();
+//        showInText(TAG, "电话号码：" + phoneNumber);
+
+        phoneModel = Build.MODEL;
+        showInText(TAG, "手机型号：" + phoneModel);
+
+        SdkVersion = Build.VERSION.SDK;
+        showInText(TAG, "SDK版本：" + SdkVersion);
+
+        OsVersion = Build.VERSION.RELEASE;
+        showInText(TAG, "系统版本：" + OsVersion);
+
+        board = Build.BOARD;
+        showInText(TAG, "主板：" + board);
+
+        brand = Build.BRAND;
+        showInText(TAG, "android系统定制商：" + brand);
+
+        cpu_abi = Build.CPU_ABI;
+        showInText(TAG, "cpu指令集：" + cpu_abi);
+
+        device1 = Build.DEVICE;
+        showInText(TAG, "设备参数：" + device1);
+
+        display = Build.DISPLAY;
+        showInText(TAG, "显示屏参数：" + display);
+
+        // 硬件名称
+        fingerprint = Build.FINGERPRINT;
+        showInText(TAG, "硬件名称：" + fingerprint);
+
+        host = Build.HOST;
+        showInText(TAG, "host：" + host);
+
+        // 修订版本列表
+        updateId = Build.ID;
+        showInText(TAG, "修订版本列表：" + updateId);
+
+        // 硬件制造商
+        manufacturer = Build.MANUFACTURER;
+        showInText(TAG, "硬件制造商：" + manufacturer);
+
+        // 手机制造商
+        product = Build.PRODUCT;
+        showInText(TAG, "手机制造商：" + product);
+
+        // 描述build的标签
+        tags = Build.TAGS;
+        showInText(TAG, "描述build的标签：" + tags);
+
+        time = Build.TIME;
+        showInText(TAG, "time：" + time);
+
+        // builder类型
+        type = Build.TYPE;
+        showInText(TAG, "builder类型：" + type);
+
+        user = Build.USER;
+        showInText(TAG, "user型：" + user);
     }
 
     public void Update(View view) {
