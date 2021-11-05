@@ -1,6 +1,6 @@
 package com.whitefancy.layoutdemo;
 
-public class Notes {
+public class LayoutNotes {
     //不同的布局具有不同的组件控制方式，同样的组件在不同的布局中，看到的效果不太一样。
     //线性布局是一个视图组，用于使所有子视图在单个方向保持对齐
     //使用 android:orientation 指定布局方向
