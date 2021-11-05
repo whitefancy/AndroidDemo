@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:textSize="26sp"
+    android:textColor="@color/item_text"
+    android:gravity="center">
+    <!--item_layout 布局主要用于RecyclerView中每一个数据项的布局，规定了一个数据项的布局方式-->
+</TextView>

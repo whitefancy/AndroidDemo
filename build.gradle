@@ -25,7 +25,14 @@ allprojects {
 //顶层构建文件build.gradle
 //顶层 build.gradle 文件位于项目的根目录下，用于定义适用于项目中所有模块的构建配置。默认情况下，顶层构建文件使用 buildscript 代码块定义项目中所有模块共用的 Gradle 代码库和依赖项。两处repositories的闭包中都声明了jcenter()这行配置，那其实它是一个代码托管仓库，很多Android开源项目都会选择将代码托管到jcenter上，声明了这行配置之后，我们就可以在项目中轻松引用任何jcenter上的开源项目了。
 //接下来，dependencies闭包中使用classpath声明了一个Gradle插件。
+//我丢失了密钥库文件并从 Google 请求了新文件，他们向我发送了生成新文件的说明，以便我可以继续上传，说明包括生成密钥的此步骤：keytool -genkeypair -alias上传 -keyalg RSA -keysize 2048 -validity 9125 -keystore keystore.jks
 //
+//此命令行生成一个扩展名为 .jks 的密钥，但在 Visual Studio 中，通过 UI 生成的密钥位于 .keystore 扩展名中，它们有什么不同吗？我应该在 Xamarin 开发中使用密钥库吗？
+//
+//我试图找到.keystore文件和.jks文件之间的区别，但我找不到它。我知道jks是“Java 密钥库”，两者都是存储键/值对的方法。
+//
+//最终，.keystore并且.jks只是文件扩展名：这是由你来理智命名您的文件。某些应用程序使用存储在 中的密钥库文件$HOME/.keystore：通常暗示它是 JKS 文件，因为JKS 是 Sun/Oracle Java 安全提供程序中的默认密钥库类型。不是每个人都使用.jksJKS 文件的扩展名，因为它被暗示为默认值。我建议使用扩展名，只是为了记住要指定的类型（如果需要）
+//我可以确认将扩展名从 .jks 更改为 .keystore 会起作用。操作前请备份！！
 
 task clean(type: Delete) {
     delete rootProject.buildDir

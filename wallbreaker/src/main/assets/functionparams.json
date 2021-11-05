@@ -1,0 +1,7 @@
+{
+  "com.whitefancy.sdk.game.api.MyPlatform": {
+    "getCurrency": "yb0001"
+  },
+  "com.whitefancy.sdk.device.api.CabbageUtil": {
+  }
+}

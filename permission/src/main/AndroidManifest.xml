@@ -124,13 +124,13 @@
         如需检查另一进程是否已获得特定权限，请将该进程 (PID) 传入 Context.checkPermission()。
         如需检查其他软件包是否已获得特定权限，请将该软件包的名称传入 PackageManager.checkPermission()。
         -->
-        <service
-            android:name=".MyInstanceIDService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
+        <!--        <service-->
+        <!--            android:name=".MyInstanceIDService"-->
+        <!--            android:exported="false">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="com.google.android.gms.iid.InstanceID" />-->
+        <!--            </intent-filter>-->
+        <!--        </service>-->
 
     </application>
 

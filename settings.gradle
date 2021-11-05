@@ -7,3 +7,6 @@ rootProject.name = "AndroidDemo"
 
 //Gradle 设置文件settings.gradle
 //这个文件用于指定项目中所有引入的模块。settings.gradle 文件位于项目的根目录下，用于指示 Gradle 在构建应用时应将哪些模块包含在内。
+include ':wallbreaker'
+include ':knowledge'
+include ':layoutdemo'
