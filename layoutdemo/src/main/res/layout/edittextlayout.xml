@@ -15,5 +15,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:hint="提示文本"
+        android:textColorHint="@color/purple_200"
+        android:inputType="text" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="自动完成文本框提示文本"
+        android:completionHint="请选择"
+        android:completionThreshold="1" />
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiAutoCompleteTextView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入籍贯" />
 </LinearLayout>

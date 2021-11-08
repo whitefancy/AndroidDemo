@@ -10,3 +10,4 @@ rootProject.name = "AndroidDemo"
 include ':wallbreaker'
 include ':knowledge'
 include ':layoutdemo'
+include ':quickdemo'

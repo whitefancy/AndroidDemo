@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">layoutDemo</string>
+    <string name="item1">font color</string>
+    <string name="item2">text size</string>
+</resources>
