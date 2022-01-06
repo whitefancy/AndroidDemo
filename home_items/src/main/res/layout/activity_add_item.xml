@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="600dp"
+    android:layout_gravity="center"
+    android:background="@color/purple_200"
+    android:orientation="vertical"
+    tools:context=".AddItem">
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:background="@drawable/my"></ImageView>
+
+    <AutoCompleteTextView
+        android:id="@+id/item_type1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp">
+
+        <requestFocus></requestFocus>
+    </AutoCompleteTextView>
+
+    <EditText
+        android:id="@+id/ed_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EFEFEF"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:padding="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:textSize="16sp"
+        android:hint="名称" />
+
+    <EditText
+        android:id="@+id/ed_begin_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#EFEFEF"
+        android:inputType="number"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:hint="剩余保质期（天）"
+        android:padding="10dp"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/apply"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:text="添加"
+        android:textSize="16sp"
+        android:onClick="Add" />
+
+</LinearLayout>
