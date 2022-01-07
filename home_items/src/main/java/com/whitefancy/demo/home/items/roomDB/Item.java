@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 public class Item {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int id;
     public String name;
     public String type;
@@ -17,5 +17,7 @@ public class Item {
     public String place;
     @ColumnInfo(name = "create_date")
     public Date createDate;
+    @ColumnInfo(name = "img_url")
+    public String imgUrl;
 
 }

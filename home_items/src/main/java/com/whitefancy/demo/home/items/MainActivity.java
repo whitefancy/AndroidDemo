@@ -12,24 +12,58 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.whitefancy.demo.home.items.livedatabuilder.ItemViewModel;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private ItemViewModel model;
 
-
+    //架构组件的目的 是提供有关应用程序架构的指南，以及用于生命周期管理和数据持久性等常见任务的库。
+// 架构组件可帮助您以健壮、可测试和可维护的方式构建应用程序，并使用更少的样板代码。架构组件库是Android Jetpack 的一部分 。
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        model = new ViewModelProvider(this).get(ItemViewModel.class);
+        final Observer<List> nameObserver = new Observer<List>() {
+            @Override
+            public void onChanged(List s) {
+
+                List<String> itemsType = MyApplication.db.itemDao().getTypes();
+                loadDB(s);
+            }
+        };
+        model.getAlltypes().observe(this, nameObserver);
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            //2
+            //
+            //您需要等待 ImageView 膨胀。来试试OnLayoutChangeListener。
+            //为何我们调用view.getWidth和view.getHeight的时候，返回值都为0呢？？？？？
+            //因为在 onCreate方法执行完了,我们定义的控件才会被度量(measure),
+            // 所以我们在onCreate方法里面通过view.getHeight()获取控件的高度或者宽度肯定是0,因为它自己还没有被度量,
+            // 也就是说他自己都不知道自己有多高,而你这时候去获取它的尺寸,肯定是不行的.
+
+        }
+    }
+
+    private void loadDB(List<String> itemsType) {
         Spinner spinner = findViewById(R.id.item_type);
 
-        String[] itemsType = {"clothes", "food", "杂物"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsType);
         spinner.setAdapter(adapter);
         String[] itemsPlace = {"冰箱", "柜子", "储藏室"};
@@ -50,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         });
-
     }
 
     @Override
