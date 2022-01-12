@@ -10,7 +10,13 @@
         android:theme="@style/Theme.AndroidDemo">
         <activity
             android:name=".MyRecyclerView.RecyclerActivity"
-            android:theme="@style/Theme.Design.NoActionBar" />
+            android:theme="@style/Theme.Design.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.interaction.InteractionActivity"
             android:theme="@style/Theme.Design.NoActionBar" />
@@ -21,13 +27,7 @@
             android:name=".ui.interaction.InteractionActivity2"
             android:theme="@style/Theme.Design.NoActionBar"></activity>
         <activity android:name=".ui.textview.TextViewActivity"></activity>
-        <activity android:name=".ui.menu.MenuActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".ui.menu.MenuActivity"></activity>
     </application>
 
 </manifest>

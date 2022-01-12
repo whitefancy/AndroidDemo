@@ -1,4 +1,4 @@
-package com.whitefancy.demo.home.items;
+package com.whitefancy.demo.home.items.livedatabuilder;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -14,66 +14,51 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.whitefancy.demo.home.items.livedatabuilder.ItemViewModel;
+import com.whitefancy.demo.home.items.AddItem;
+import com.whitefancy.demo.home.items.R;
+import com.whitefancy.demo.home.items.roomDB.AppDatabase;
+import com.whitefancy.demo.home.items.roomDB.Item;
+import com.whitefancy.demo.home.items.roomDB.ItemDao;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class RecyclerActivity extends AppCompatActivity {
     private ItemViewModel model;
+    private Spinner itemTypes;
+    public static ItemDao db;
+
+    private RecyclerView mContactsRecyclerView;
+
+    private static Spinner itemPlaces;
+    public static DbAdapter adapter;
+    public static List<String> dbdata;
 
     //架构组件的目的 是提供有关应用程序架构的指南，以及用于生命周期管理和数据持久性等常见任务的库。
 // 架构组件可帮助您以健壮、可测试和可维护的方式构建应用程序，并使用更少的样板代码。架构组件库是Android Jetpack 的一部分 。
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        model = new ViewModelProvider(this).get(ItemViewModel.class);
-        final Observer<List> nameObserver = new Observer<List>() {
-            @Override
-            public void onChanged(List s) {
-
-                loadDB(s);
-            }
-        };
-        model.getAlltypes().observe(this, nameObserver);
-
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            //2
-            //
-            //您需要等待 ImageView 膨胀。来试试OnLayoutChangeListener。
-            //为何我们调用view.getWidth和view.getHeight的时候，返回值都为0呢？？？？？
-            //因为在 onCreate方法执行完了,我们定义的控件才会被度量(measure),
-            // 所以我们在onCreate方法里面通过view.getHeight()获取控件的高度或者宽度肯定是0,因为它自己还没有被度量,
-            // 也就是说他自己都不知道自己有多高,而你这时候去获取它的尺寸,肯定是不行的.
-
-        }
-    }
-
-    private void loadDB(List<String> itemsType) {
-        Spinner spinner = findViewById(R.id.item_type);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsType);
-        spinner.setAdapter(adapter);
-        String[] itemsPlace = {"冰箱", "柜子", "储藏室"};
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsPlace);
-        spinner = findViewById(R.id.item_status);
-        spinner.setAdapter(adapter);
-        String[] itemsTime = {"1周", "1个月", "1年"};
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsTime);
-        spinner = findViewById(R.id.item_time);
-        spinner.setAdapter(adapter);
-//悬浮操作按钮 (FAB) 是一种圆形按钮，用于在应用界面中触发主要操作。本页将介绍如何将悬浮操作按钮添加到布局、自定义该按钮的一些外观，以及响应按钮点按操作。
+        setContentView(R.layout.activity_recycler);
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "local")
+                .allowMainThreadQueries().build().itemDao();
+        itemTypes = findViewById(R.id.item_type);
+        itemPlaces = findViewById(R.id.item_place);
+        adapter = new DbAdapter(this, new ArrayList<Item>());
+        mContactsRecyclerView = findViewById(R.id.contactsRecyclerView);
+        mContactsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mContactsRecyclerView.setAdapter(adapter);
+        //悬浮操作按钮 (FAB) 是一种圆形按钮，用于在应用界面中触发主要操作。本页将介绍如何将悬浮操作按钮添加到布局、自定义该按钮的一些外观，以及响应按钮点按操作。
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +68,44 @@ public class MainActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         });
+
+        loadContacts();
+    }
+
+    private void ViewModelUsage() {
+        model = new ViewModelProvider(this).get(ItemViewModel.class);
+        final Observer<List> nameObserver = new Observer<List>() {
+            @Override
+            public void onChanged(List s) {
+            }
+        };
+        model.getAlltypes().observe(this, nameObserver);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+
+        }
+    }
+
+    private void loadContacts() {
+
+        List<String> names = RecyclerActivity.db.getTypes();
+        Spinner spinner = findViewById(R.id.item_type);
+
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
+        spinner.setAdapter(adapter1);
+        List<String> itemsPlace = RecyclerActivity.db.getPlaces();
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsPlace);
+        spinner = findViewById(R.id.item_place);
+        spinner.setAdapter(adapter2);
+        String[] itemsTime = {"1周", "1个月", "1年"};
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsTime);
+        spinner = findViewById(R.id.item_time);
+        spinner.setAdapter(adapter3);
+        this.adapter.updateData(db.getAll());
     }
 
     @Override
@@ -103,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
             mIntent.putExtra("imageURL", currentPhotoPath);
             mIntent.setClass(this, AddItem.class);
             startActivity(mIntent);
+            startActivityForResult(mIntent, RC_CREATE_CONTACT);
+        } else if (requestCode == RC_CREATE_CONTACT && resultCode == RESULT_OK) {
+            loadContacts();
+        } else if (requestCode == RC_UPDATE_CONTACT && resultCode == RESULT_OK) {
+            loadContacts();
         }
     }
 
@@ -150,5 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static final int RC_UPDATE_CONTACT = 2;
+    private static final int RC_CREATE_CONTACT = 1;
 
 }

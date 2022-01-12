@@ -9,7 +9,7 @@ import java.util.List;
 
 @Dao
 public interface ItemDao {
-    @Query("select type from item")
+    @Query("select distinct type from item")
     List<String> getTypes();
 
     @Query("select distinct place from item")

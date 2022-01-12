@@ -1,9 +1,11 @@
 package com.whitefancy.demo.home.items;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -12,18 +14,19 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.whitefancy.demo.home.items.livedatabuilder.RecyclerActivity;
 import com.whitefancy.demo.home.items.roomDB.Item;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class AddItem extends AppCompatActivity {
+    private static final String TAG = "AddItem";
     private ImageView imageView;
     String currentPhotoPath;
     AutoCompleteTextView au = null;
+    AutoCompleteTextView place = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +41,8 @@ public class AddItem extends AppCompatActivity {
 
         Intent mIntent = getIntent();
         currentPhotoPath = mIntent.getStringExtra("imageURL");
-        FileInputStream fs = null;
-        try {
-            fs = new FileInputStream(currentPhotoPath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Bitmap bitmap = BitmapFactory.decodeStream(fs);
         imageView = (ImageView) findViewById(R.id.item_image);
     }
-
-    private static final String[] COUNTRIES = new String[]{
-            "冰箱", "柜子", "储藏室"
-    };
 
     @Override
     protected void onStart() {
@@ -82,8 +73,8 @@ public class AddItem extends AppCompatActivity {
     }
 
     private void loadDB() {
-        au = findViewById(R.id.autoCompleteTextView);
-        List<String> names = MyApplication.db.itemDao().getTypes();
+        au = findViewById(R.id.item_type);
+        List<String> names = RecyclerActivity.db.getTypes();
         ArrayAdapter<String> nameArray = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
         au.setAdapter(nameArray);
         au.setThreshold(1);
@@ -93,6 +84,19 @@ public class AddItem extends AppCompatActivity {
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     au.showDropDown();
+                }
+            }
+        });
+        place = findViewById(R.id.item_place);
+        List<String> places = RecyclerActivity.db.getPlaces();
+        place.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, places));
+        place.setThreshold(1);
+        //要使自动完成显示在焦点上，请添加焦点侦听器并在字段获得焦点时显示下拉菜单，如下所示：
+        place.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    place.showDropDown();
                 }
             }
         });
@@ -133,6 +137,13 @@ public class AddItem extends AppCompatActivity {
         item.imgUrl = currentPhotoPath;
         item.name = name;
         item.type = type;
-        MyApplication.db.itemDao().insertAll();
+        item.place = place.getText().toString();
+        try {
+            RecyclerActivity.db.insertAll(item);
+            setResult(RESULT_OK);
+            this.finish();
+        } catch (SQLiteConstraintException e) {
+            Log.e(TAG, "A cotnact with same phone number already exists.");
+        }
     }
 }

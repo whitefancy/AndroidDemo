@@ -39,6 +39,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             @Override
             public void onClick(View view) {
                 Log.i("text", mDataset[m]);
+                mDataset[0] = mDataset[m];
+                MyAdapter.this.notifyItemChanged(0);
             }
         });
 
