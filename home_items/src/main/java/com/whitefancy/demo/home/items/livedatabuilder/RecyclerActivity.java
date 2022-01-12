@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+//todo 数据库同步到服务器 spinner不会自动刷新
 public class RecyclerActivity extends AppCompatActivity {
     private ItemViewModel model;
     private Spinner itemTypes;
@@ -68,7 +70,45 @@ public class RecyclerActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         });
+        List<String> names = RecyclerActivity.db.getTypes();
+        Spinner spinner = findViewById(R.id.item_type);
 
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
+        spinner.setAdapter(adapter1);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String data = adapterView.getSelectedItem().toString();
+                String[] datas = {data};
+                adapter.updateData(db.loadAllByTypes(datas));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        List<String> itemsPlace = RecyclerActivity.db.getPlaces();
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsPlace);
+        spinner = findViewById(R.id.item_place);
+        spinner.setAdapter(adapter2);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String data = adapterView.getSelectedItem().toString();
+                String[] datas = {data};
+                adapter.updateData(db.loadAllByPlaces(datas));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        String[] itemsTime = {"1周", "1个月", "1年"};
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsTime);
+        spinner = findViewById(R.id.item_time);
+        spinner.setAdapter(adapter3);
         loadContacts();
     }
 
@@ -92,19 +132,7 @@ public class RecyclerActivity extends AppCompatActivity {
 
     private void loadContacts() {
 
-        List<String> names = RecyclerActivity.db.getTypes();
-        Spinner spinner = findViewById(R.id.item_type);
 
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
-        spinner.setAdapter(adapter1);
-        List<String> itemsPlace = RecyclerActivity.db.getPlaces();
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsPlace);
-        spinner = findViewById(R.id.item_place);
-        spinner.setAdapter(adapter2);
-        String[] itemsTime = {"1周", "1个月", "1年"};
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsTime);
-        spinner = findViewById(R.id.item_time);
-        spinner.setAdapter(adapter3);
         this.adapter.updateData(db.getAll());
     }
 

@@ -91,7 +91,8 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
 
         <TableRow
             android:layout_width="match_parent"
@@ -114,7 +115,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:text="新旧程度"></TextView>
+                android:text="存放位置"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:text="物品类型"></TextView>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -122,9 +129,11 @@
                 android:inputType="textEmailAddress"
                 android:text="有效期"></TextView>
         </TableRow>
-
+        <!--该TableRow的是里面的RecyclerView是子女RecyclerView的不是孩子TableLayout
+        如果 TableRow 的父级不是 TableLayout，则 TableRow 将表现为水平 LinearLayout-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/contactsRecyclerView"
+            android:stretchColumns="*"
             android:layout_height="match_parent">
 
         </androidx.recyclerview.widget.RecyclerView>

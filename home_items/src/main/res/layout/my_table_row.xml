@@ -7,31 +7,36 @@
 
     <ImageView
         android:id="@+id/item_image"
-        android:layout_width="300px"
-        android:layout_height="300px"
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:background="@drawable/image_background"
         android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="大衣"></TextView>
 
     <TextView
         android:id="@+id/item_place"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="新"></TextView>
 
     <TextView
         android:id="@+id/item_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="3年"></TextView>
 
     <TextView
         android:id="@+id/item_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="喜欢"></TextView>
+        android:layout_weight="1"
+        android:text="1年以上"></TextView>
 </TableRow>
