@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//todo 数据库同步到服务器 spinner不会自动刷新
+//todo 数据库同步到服务器
 public class RecyclerActivity extends AppCompatActivity {
     private ItemViewModel model;
     private Spinner itemTypes;
@@ -70,11 +70,11 @@ public class RecyclerActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         });
-        List<String> names = RecyclerActivity.db.getTypes();
+        itemsType = RecyclerActivity.db.getTypes();
         Spinner spinner = findViewById(R.id.item_type);
 
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
-        spinner.setAdapter(adapter1);
+        typeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsType);
+        spinner.setAdapter(typeAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -88,10 +88,10 @@ public class RecyclerActivity extends AppCompatActivity {
 
             }
         });
-        List<String> itemsPlace = RecyclerActivity.db.getPlaces();
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsPlace);
+        itemsPlace = RecyclerActivity.db.getPlaces();
+        placeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsPlace);
         spinner = findViewById(R.id.item_place);
-        spinner.setAdapter(adapter2);
+        spinner.setAdapter(placeAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -112,6 +112,11 @@ public class RecyclerActivity extends AppCompatActivity {
         loadContacts();
     }
 
+    List<String> itemsType;
+    List<String> itemsPlace;
+    private ArrayAdapter<String> placeAdapter;
+    private ArrayAdapter<String> typeAdapter;
+
     private void ViewModelUsage() {
         model = new ViewModelProvider(this).get(ItemViewModel.class);
         final Observer<List> nameObserver = new Observer<List>() {
@@ -131,6 +136,12 @@ public class RecyclerActivity extends AppCompatActivity {
     }
 
     private void loadContacts() {
+        itemsType.clear();
+        itemsType.addAll(RecyclerActivity.db.getTypes());
+        typeAdapter.notifyDataSetChanged();
+        itemsPlace.clear();
+        itemsPlace.addAll(RecyclerActivity.db.getPlaces());
+        placeAdapter.notifyDataSetChanged();
 
 
         this.adapter.updateData(db.getAll());

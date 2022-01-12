@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidDemo">
         <activity android:name=".MainActivity"></activity>
-        <activity android:name=".livedatabuilder.RecyclerActivity">
+        <activity
+            android:name=".livedatabuilder.RecyclerActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
