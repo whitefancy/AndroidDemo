@@ -1,10 +1,13 @@
 package com.whitefancy.demo.home.items.livedatabuilder;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,27 +16,33 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 import com.whitefancy.demo.home.items.AddItem;
 import com.whitefancy.demo.home.items.R;
 import com.whitefancy.demo.home.items.roomDB.AppDatabase;
 import com.whitefancy.demo.home.items.roomDB.Item;
 import com.whitefancy.demo.home.items.roomDB.ItemDao;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
-//todo 数据库同步到服务器
+//todo 应用开启页面下载数据，应用退出界面数据库同步到服务器 图片压缩存储，退出应用时清理未使用图片
 public class RecyclerActivity extends AppCompatActivity {
     private ItemViewModel model;
     private Spinner itemTypes;
@@ -109,22 +118,115 @@ public class RecyclerActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsTime);
         spinner = findViewById(R.id.item_time);
         spinner.setAdapter(adapter3);
+
+        exitDialog = new AlertDialog.Builder(this).setTitle("退出并同步数据到服务器")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                http请求这个不能在主线程
+                                uploadDB();
+                                clearUselessImage();
+                                System.exit(0);
+                            }
+                        }).start();
+                    }
+
+                })
+                .setNegativeButton("取消", null).create();
+
+
         loadContacts();
+
+    }
+
+    //应用退出界面数据库同步到服务器 图片压缩存储，退出应用时清理未使用图片
+    private void clearUselessImage() {
+    }
+
+    private void uploadDB() {
+
+//你可以通过这个：
+//
+//通过选择查询获取您要发送的所有数据并将此数据存储在数组列表中。
+//
+//使用 GSON 库，您可以将该数组列表转换为 json 数据
+//
+//现在您必须创建一个 API 来接收该 json 数据并对其进行解析并将每条记录插入数据库。
+//
+//在应用程序端，您必须点击该 API 并将 json 数据传递给它。
+        Gson gson = new Gson();
+        String j = gson.toJson(db.getAll());
+        //使用 GZIP 压缩的方法
+        String u = null;
+        try {
+            u = compress(j);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i(TAG, u);
+        String r = httpPost("http://172.16.70.19/PaymentSolutionPHP/gameServer/db_save.php", u);
+        Log.i(TAG, r);
+
+    }
+
+    public static String httpPost(String urlStr, String paramsEncoded) {
+
+        String result = null;
+        URL url = null;
+        HttpURLConnection connection = null;
+        try {
+            byte[] bytes = paramsEncoded.getBytes("UTF-8");
+            url = new URL(urlStr);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-encoding", "gzip");
+            connection.setRequestProperty("Content-type", "application/octet-stream");
+            connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
+            OutputStream wr = connection.getOutputStream();
+            wr.write(bytes);
+            wr.flush();
+            wr.close();
+
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            result = response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static String compress(String str) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream(str.length());
+        GZIPOutputStream gos = new GZIPOutputStream(os);
+        gos.write(str.getBytes());
+        os.close();
+        gos.close();
+        return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT);
     }
 
     List<String> itemsType;
     List<String> itemsPlace;
     private ArrayAdapter<String> placeAdapter;
     private ArrayAdapter<String> typeAdapter;
+    private AlertDialog exitDialog;
 
-    private void ViewModelUsage() {
-        model = new ViewModelProvider(this).get(ItemViewModel.class);
-        final Observer<List> nameObserver = new Observer<List>() {
-            @Override
-            public void onChanged(List s) {
-            }
-        };
-        model.getAlltypes().observe(this, nameObserver);
+    @Override
+    public void onBackPressed() {
+
+        exitDialog.show();
+
     }
 
     @Override
