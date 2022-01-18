@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,25 +21,20 @@ import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.whitefancy.demo.home.items.AddItem;
 import com.whitefancy.demo.home.items.R;
 import com.whitefancy.demo.home.items.roomDB.AppDatabase;
 import com.whitefancy.demo.home.items.roomDB.Item;
 import com.whitefancy.demo.home.items.roomDB.ItemDao;
+import com.whitefancy.demo.home.items.server.Server;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
 
 //todo 应用开启页面下载数据，应用退出界面数据库同步到服务器 图片压缩存储，退出应用时清理未使用图片
 public class RecyclerActivity extends AppCompatActivity {
@@ -77,6 +71,25 @@ public class RecyclerActivity extends AppCompatActivity {
                 //打开摄像机
 // 启动拍照功能，拍照完成后 启动新增页面
                 dispatchTakePictureIntent();
+            }
+        });
+        FloatingActionButton synfab = findViewById(R.id.synfab);
+        synfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //和线上同步数据
+                //删除本地多余文件
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+//                                http请求这个不能在主线程
+                        synServer();
+
+                        loadContacts();
+//                        uploadDB();
+                        clearUselessImage();
+                    }
+                }).start();
             }
         });
         itemsType = RecyclerActivity.db.getTypes();
@@ -143,8 +156,40 @@ public class RecyclerActivity extends AppCompatActivity {
 
     }
 
+    private void synServer() {
+        String r = Server.httpGet("http://172.16.70.19/PaymentSolutionPHP/gameServer/db_get.php");
+        Log.i(TAG, r);
+//
+        //“Sun Jan 29 14:34:06 格林尼治标准时间+0800 2012”解析
+//        String str = "Sun Jan 29 14:34:06 格林尼治标准时间+0800 2012";
+//        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss 格林尼治标准时间+0800 yyyy",Locale.ENGLISH);
+// 原因是Gson会默认会先按本地的日期格式来格式化日期，如果不成功，则再按照英文日期格式格式化日期，如果不成功则用ISO8601Utils格式化日期，如果再不成功就抛出上述异常，Gson处理日期属性的相关代码如下：
+        //为了避免使用Gson时遇到locale影响Date格式的问题，使用GsonBuilder来创建Gson对象，在创建过程中调用GsonBuilder.setDateFormat(String)指定一个固定的格式即可。例如：
+        Gson gson = new GsonBuilder().setDateFormat("MMM dd,yyyy HH:mm:ss").create();
+        Item[] serverItem = gson.fromJson(r, Item[].class);
+        if (null != serverItem)
+            db.insertAll(serverItem);
+    }
+
     //应用退出界面数据库同步到服务器 图片压缩存储，退出应用时清理未使用图片
-    private void clearUselessImage() {
+    private boolean clearUselessImage() {
+        if (null == currentPhotoPath) {
+            //该字段为null，认为此次打开应用，并没有拍照，所以没有新增的未使用图片
+            return true;
+        }
+        List<String> allpicPath = db.getImages();
+        String folderPath = new File(currentPhotoPath).getParent();
+        File[] files = new File(folderPath).listFiles();
+        Log.d(TAG, "fileList：" + (files == null ? "files = null" : files.length));
+        if (files == null || files.length == 0) return false;
+        for (File f : files) {
+            String fpath = f.getAbsolutePath();
+            if (!allpicPath.contains(fpath)) {
+                Log.d(TAG, "deleteFile：" + f.getAbsolutePath());
+                f.delete();
+            }
+        }
+        return true;
     }
 
     private void uploadDB() {
@@ -163,57 +208,24 @@ public class RecyclerActivity extends AppCompatActivity {
         //使用 GZIP 压缩的方法
         String u = null;
         try {
-            u = compress(j);
+            u = Server.compress(j);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Log.i(TAG, u);
-        String r = httpPost("http://172.16.70.19/PaymentSolutionPHP/gameServer/db_save.php", u);
+        String r = Server.httpPost("http://172.16.70.19/PaymentSolutionPHP/gameServer/db_save.php", u);
         Log.i(TAG, r);
 
     }
 
-    public static String httpPost(String urlStr, String paramsEncoded) {
+    //将服务端没有的图片压缩后上传到服务端，用于多个设备同步
+    private void uploadSmallPic() {
 
-        String result = null;
-        URL url = null;
-        HttpURLConnection connection = null;
-        try {
-            byte[] bytes = paramsEncoded.getBytes("UTF-8");
-            url = new URL(urlStr);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-encoding", "gzip");
-            connection.setRequestProperty("Content-type", "application/octet-stream");
-            connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
-            OutputStream wr = connection.getOutputStream();
-            wr.write(bytes);
-            wr.flush();
-            wr.close();
-
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            result = response.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
-    public static String compress(String str) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream(str.length());
-        GZIPOutputStream gos = new GZIPOutputStream(os);
-        gos.write(str.getBytes());
-        os.close();
-        gos.close();
-        return Base64.encodeToString(os.toByteArray(), Base64.DEFAULT);
+    //临期食品提醒
+    private void DealineNotify() {
+
     }
 
     List<String> itemsType;
@@ -240,10 +252,15 @@ public class RecyclerActivity extends AppCompatActivity {
     private void loadContacts() {
         itemsType.clear();
         itemsType.addAll(RecyclerActivity.db.getTypes());
-        typeAdapter.notifyDataSetChanged();
         itemsPlace.clear();
         itemsPlace.addAll(RecyclerActivity.db.getPlaces());
-        placeAdapter.notifyDataSetChanged();
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                placeAdapter.notifyDataSetChanged();
+                typeAdapter.notifyDataSetChanged();
+            }
+        });
 
 
         this.adapter.updateData(db.getAll());
@@ -257,7 +274,7 @@ public class RecyclerActivity extends AppCompatActivity {
             //
             //查询发现：
             //
-            //照相机有自己默认的存储路径，拍摄的照片将返回一个缩略图，即data里面保存的数据。
+            //照相机有自己默认的存储路径，拍摄的照片将返回一个缩略图  ，即data里面保存的数据。
             //
             //但是如果自己代码指定了保存图片的uri，data里面就不会保存数据。也就是说，调用相机时指定了uri，data就没有数据，没有指定uri，data就有数据。
             //
@@ -290,6 +307,7 @@ public class RecyclerActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
+        Log.i(TAG, currentPhotoPath);
         return image;
     }
 

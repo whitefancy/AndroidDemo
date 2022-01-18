@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.whitefancy.demo.home.items.livedatabuilder.RecyclerActivity;
 import com.whitefancy.demo.home.items.roomDB.Item;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -126,6 +127,7 @@ public class AddItem extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
     }
 
+
     public void Add(View view) {
         String type = au.getText().toString();
         String name = ((EditText) findViewById(R.id.item_name)).getText().toString();
@@ -145,5 +147,13 @@ public class AddItem extends AppCompatActivity {
         } catch (SQLiteConstraintException e) {
             Log.e(TAG, "A cotnact with same phone number already exists.");
         }
+    }
+
+    private void renameFile(String name) {
+
+        String path = "/storage/emulated/0/Android/data/com.whitefancy.demo.home.items/files/Pictures/valid";
+        String newPhotoPath = path + name + ".jpg";
+        File file = new File(currentPhotoPath);
+        boolean success = file.renameTo(new File(newPhotoPath));
     }
 }
