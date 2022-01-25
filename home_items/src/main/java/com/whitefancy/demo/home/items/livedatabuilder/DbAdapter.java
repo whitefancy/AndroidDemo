@@ -54,6 +54,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.MyViewHolder> {
         private TextView name;
         private TextView type;
         private TextView place;
+        private TextView time;
         private ImageView imageView;
 
         public MyViewHolder(@NonNull @org.jetbrains.annotations.NotNull View my_table_row) {
@@ -63,6 +64,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.MyViewHolder> {
             type = my_table_row.findViewById(R.id.item_type);
             place = my_table_row.findViewById(R.id.item_place);
             imageView = my_table_row.findViewById(R.id.item_image);
+            time = my_table_row.findViewById(R.id.item_status);
         }
 
         void bindData(int position) {
@@ -72,6 +74,8 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.MyViewHolder> {
             place.setText(contact.place);
             name.setText(contact.name);
             setPic(contact.imgUrl);
+            int date = (int) (contact.createTs + contact.lifetime - System.currentTimeMillis() / 1000) / (24 * 60 * 60) + 1;
+            time.setText(date + " 天");
         }
 
         private void setPic(String currentPhotoPath) {

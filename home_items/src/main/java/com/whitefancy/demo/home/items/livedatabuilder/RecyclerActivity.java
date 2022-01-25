@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 //已完成 应用退出界面数据库同步到服务器 退出应用时清理未使用图片 应用同步下载数据
-//todo ，图片压缩存储， 搜索栏 倒计时通知 长按修改物品相关信息 左滑删除物品
+//todo ，图片压缩存储， 搜索栏 倒计时通知 长按修改物品相关信息 左滑删除物品 根据日期过滤物品
 public class RecyclerActivity extends AppCompatActivity {
     private ItemViewModel model;
     private Spinner itemTypes;
@@ -137,10 +137,34 @@ public class RecyclerActivity extends AppCompatActivity {
 
             }
         });
-        String[] itemsTime = {"1周", "1个月", "1年"};
+        String[] itemsTime = {"1周", "1个月", "3天", "全部"};
         ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsTime);
         spinner = findViewById(R.id.item_time);
         spinner.setAdapter(adapter3);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String data = adapterView.getSelectedItem().toString();
+                int delta = 60 * 60 * 24;
+                if ("1周".equals(data)) {
+                    delta = 7 * 60 * 60 * 24;
+                } else if ("1个月".equals(data)) {
+                    delta = 30 * 60 * 60 * 24;
+                } else if ("3天".equals(data)) {
+                    delta = 3 * 60 * 60 * 24;
+                } else {
+                    adapter.updateData(db.getAll());
+                    return;
+                }
+                long now = System.currentTimeMillis() / 1000;
+                adapter.updateData(db.loadAllByTime((int) (now + delta)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         exitDialog = new AlertDialog.Builder(this).setTitle("退出并同步数据到服务器")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {

@@ -18,8 +18,6 @@ import com.whitefancy.demo.home.items.livedatabuilder.RecyclerActivity;
 import com.whitefancy.demo.home.items.roomDB.Item;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class AddItem extends AppCompatActivity {
@@ -132,10 +130,9 @@ public class AddItem extends AppCompatActivity {
         String type = au.getText().toString();
         String name = ((EditText) findViewById(R.id.item_name)).getText().toString();
         Integer shelf_time = Integer.parseInt(((EditText) findViewById(R.id.item_time)).getText().toString());
-        Date today = Calendar.getInstance().getTime();
         Item item = new Item();
-        item.createDate = today;
-        item.deadline = shelf_time;
+        item.createTs = (int) (System.currentTimeMillis() / 1000);
+        item.lifetime = shelf_time * 24 * 60 * 60;
         item.imgUrl = currentPhotoPath;
         item.name = name;
         item.type = type;
