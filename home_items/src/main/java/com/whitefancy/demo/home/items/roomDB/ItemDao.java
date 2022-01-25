@@ -29,8 +29,12 @@ public interface ItemDao {
     @Query("select * from item where type in (:types)")
     List<Item> loadAllByTypes(String[] types);
 
+    @Query("select type,count(*) as count from item group by type")
+    List<Summary> loadSummary();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-//如果您只想将整个对象替换为新对象，则只需指定OnConflictStrategy
+
+        //如果您只想将整个对象替换为新对象，则只需指定OnConflictStrategy
     void insertAll(Item... items);
 
 

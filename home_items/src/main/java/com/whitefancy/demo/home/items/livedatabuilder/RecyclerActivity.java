@@ -36,13 +36,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//todo 应用开启页面下载数据，应用退出界面数据库同步到服务器 图片压缩存储，退出应用时清理未使用图片
+//已完成 应用退出界面数据库同步到服务器 退出应用时清理未使用图片 应用同步下载数据
+//todo ，图片压缩存储， 搜索栏 倒计时通知 长按修改物品相关信息 左滑删除物品
 public class RecyclerActivity extends AppCompatActivity {
     private ItemViewModel model;
     private Spinner itemTypes;
     public static ItemDao db;
 
     private RecyclerView mContactsRecyclerView;
+    private RecyclerView summaryView;
+    public static SummaryAdapter summaryAdapter;
 
     private static Spinner itemPlaces;
     public static DbAdapter adapter;
@@ -63,6 +66,11 @@ public class RecyclerActivity extends AppCompatActivity {
         mContactsRecyclerView = findViewById(R.id.contactsRecyclerView);
         mContactsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mContactsRecyclerView.setAdapter(adapter);
+
+        summaryView = findViewById(R.id.summaryRecyclerView);
+        summaryAdapter = new SummaryAdapter(this, new ArrayList<>());
+        summaryView.setLayoutManager(new LinearLayoutManager(this));
+        summaryView.setAdapter(summaryAdapter);
         //悬浮操作按钮 (FAB) 是一种圆形按钮，用于在应用界面中触发主要操作。本页将介绍如何将悬浮操作按钮添加到布局、自定义该按钮的一些外观，以及响应按钮点按操作。
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +100,8 @@ public class RecyclerActivity extends AppCompatActivity {
                 }).start();
             }
         });
+        summaryAdapter.updateData(db.loadSummary());
+
         itemsType = RecyclerActivity.db.getTypes();
         Spinner spinner = findViewById(R.id.item_type);
 
@@ -261,8 +271,7 @@ public class RecyclerActivity extends AppCompatActivity {
                 typeAdapter.notifyDataSetChanged();
             }
         });
-
-
+        summaryAdapter.updateData(db.loadSummary());
         this.adapter.updateData(db.getAll());
     }
 

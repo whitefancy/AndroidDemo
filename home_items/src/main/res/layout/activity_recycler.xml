@@ -50,21 +50,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="center"
-            android:src="@drawable/syn"
+            android:src="@mipmap/syn"
             android:contentDescription="同步"
             android:layout_margin="16dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
-            style="@style/Widget.MaterialComponents.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:scaleType="center"
-            app:srcCompat="@drawable/addt"
-            android:background="@color/purple_200"
+            app:srcCompat="@mipmap/add1"
             android:contentDescription="新增"
-            app:tint="@color/white"
             android:layout_margin="16dp" />
     </LinearLayout>
 
@@ -73,40 +70,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/summaryRecyclerView"
+            android:stretchColumns="*"
+            android:layout_height="match_parent">
 
-        </TableRow>
+        </androidx.recyclerview.widget.RecyclerView>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
-            <!--            这一行显示已拥有物品的数量：二级分类： 23 件-->
-            <TextView
-                android:id="@+id/type1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:text="毛衣： 5 件"></TextView>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:background="#2196F3">
-
-
-            <TextView
-                android:id="@+id/type2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:text="大衣： 4 件"></TextView>
-        </TableRow>
         <!--右下角有个加号按钮，用来添加物品-->
     </TableLayout>
 
@@ -119,7 +89,8 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@color/purple_200">
 
             <TextView
                 android:layout_width="wrap_content"
