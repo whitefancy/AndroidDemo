@@ -18,9 +18,14 @@ import com.whitefancy.demo.home.items.roomDB.Item;
 import java.util.List;
 
 public class DbAdapter extends RecyclerView.Adapter<DbAdapter.MyViewHolder> {
-    private List<String> itemsType;
     private Context context;
     private List<Item> items;
+    private ActionCallback mActionCallbacks;
+
+    //Interface for callbacks
+    interface ActionCallback {
+        void onLongClickListener(Item contact);
+    }
 
     public DbAdapter(Context context, List<Item> data) {
         this.items = data;
@@ -49,7 +54,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.MyViewHolder> {
         notifyDataSetChanged();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         public View table_row;
         private TextView name;
         private TextView type;
@@ -59,6 +64,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.MyViewHolder> {
 
         public MyViewHolder(@NonNull @org.jetbrains.annotations.NotNull View my_table_row) {
             super(my_table_row);
+            my_table_row.setOnLongClickListener(this);
             table_row = my_table_row;
             name = my_table_row.findViewById(R.id.item_name);
             type = my_table_row.findViewById(R.id.item_type);
@@ -82,7 +88,19 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.MyViewHolder> {
             Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
             imageView.setImageBitmap(bitmap);
         }
+
+        @Override
+        public boolean onLongClick(View view) {
+            if (mActionCallbacks != null) {
+                mActionCallbacks.onLongClickListener(items.get(getAdapterPosition()));
+            }
+            return true;
+        }
+
+
     }
 
-
+    void addActionCallback(ActionCallback actionCallbacks) {
+        mActionCallbacks = actionCallbacks;
+    }
 }

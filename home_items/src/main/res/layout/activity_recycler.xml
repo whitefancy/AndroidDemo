@@ -13,7 +13,7 @@
         android:padding="16dp"
         android:layout_gravity="fill"
         android:orientation="horizontal">
-        <!--下拉框列表，用来筛选 物品类型，保质期，已拥有（有问题），-->
+        <!--下拉框列表，用来筛选 物品类型，物品存放位置，保质期，-->
         <Spinner
             android:id="@+id/item_type"
             android:layout_weight="1"
@@ -127,7 +127,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/contactsRecyclerView"
             android:stretchColumns="*"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         </androidx.recyclerview.widget.RecyclerView>
 

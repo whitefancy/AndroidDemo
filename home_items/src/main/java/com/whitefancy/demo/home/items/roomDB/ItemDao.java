@@ -36,6 +36,9 @@ public interface ItemDao {
     @Query("select type,count(*) as count from item group by type")
     List<Summary> loadSummary();
 
+    @Query("select * from item where id =(:id) limit 1")
+    Item getById(int id);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
 
         //如果您只想将整个对象替换为新对象，则只需指定OnConflictStrategy

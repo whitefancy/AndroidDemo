@@ -35,6 +35,9 @@
         <activity
             android:name=".AddItem"
             android:launchMode="singleInstance"></activity>
+        <activity
+            android:name=".UpdateItem"
+            android:launchMode="singleInstance"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

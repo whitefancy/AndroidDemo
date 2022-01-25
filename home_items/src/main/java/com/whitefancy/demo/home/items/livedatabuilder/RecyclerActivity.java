@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.whitefancy.demo.home.items.AddItem;
 import com.whitefancy.demo.home.items.R;
+import com.whitefancy.demo.home.items.UpdateItem;
 import com.whitefancy.demo.home.items.roomDB.AppDatabase;
 import com.whitefancy.demo.home.items.roomDB.Item;
 import com.whitefancy.demo.home.items.roomDB.ItemDao;
@@ -36,8 +37,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//已完成 应用退出界面数据库同步到服务器 退出应用时清理未使用图片 应用同步下载数据
-//todo ，图片压缩存储， 搜索栏 倒计时通知 长按修改物品相关信息 左滑删除物品 根据日期过滤物品
+//已完成 应用退出界面数据库同步到服务器 退出应用时清理未使用图片 应用同步下载数据 根据日期过滤物品 长按修改物品相关信息
+//todo ，图片压缩存储， 搜索栏 倒计时通知左滑删除物品
 public class RecyclerActivity extends AppCompatActivity {
     private ItemViewModel model;
     private Spinner itemTypes;
@@ -63,6 +64,16 @@ public class RecyclerActivity extends AppCompatActivity {
         itemTypes = findViewById(R.id.item_type);
         itemPlaces = findViewById(R.id.item_place);
         adapter = new DbAdapter(this, new ArrayList<Item>());
+        adapter.addActionCallback(new DbAdapter.ActionCallback() {
+            @Override
+            public void onLongClickListener(Item contact) {
+                Intent intent = new Intent(RecyclerActivity.this, UpdateItem.class);
+                Gson gson = new Gson();
+                String j = gson.toJson(contact);
+                intent.putExtra("itemInfo", j);
+                startActivityForResult(intent, RC_UPDATE_CONTACT);
+            }
+        });
         mContactsRecyclerView = findViewById(R.id.contactsRecyclerView);
         mContactsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mContactsRecyclerView.setAdapter(adapter);
@@ -137,7 +148,7 @@ public class RecyclerActivity extends AppCompatActivity {
 
             }
         });
-        String[] itemsTime = {"1周", "1个月", "3天", "全部"};
+        String[] itemsTime = {"全部", "1周", "1个月", "3天",};
         ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsTime);
         spinner = findViewById(R.id.item_time);
         spinner.setAdapter(adapter3);
@@ -295,7 +306,7 @@ public class RecyclerActivity extends AppCompatActivity {
                 typeAdapter.notifyDataSetChanged();
             }
         });
-        summaryAdapter.updateData(db.loadSummary());
+        this.summaryAdapter.updateData(db.loadSummary());
         this.adapter.updateData(db.getAll());
     }
 
