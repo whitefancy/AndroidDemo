@@ -1,0 +1,15 @@
+{
+  "org.cocos2dx.lua.MyPlatform": {
+    "getCurrency": "yb0001",
+    "PlatformLogin": 1,
+    "PlatformExitGame": 1
+  },
+  "org.cocos2dx.lua.AppUtils": {
+    "callUpdate": [
+      "http://192.168.2.118:8080/downloads/byjt_m-Mf-release.apk",
+      0,
+      "update mffy",
+      453
+    ]
+  }
+}
